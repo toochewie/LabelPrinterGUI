@@ -233,7 +233,7 @@
     function printZPLFile(filename, menuItem) {
         // Call the batch script to print the ZPL file
         var shell = new ActiveXObject("WScript.Shell");
-        shell.Run("print.bat.lnk " + filename);
+        shell.Run("silentPrinter.lnk " + filename);
 
         // Show notification
         notification = document.createElement("div");

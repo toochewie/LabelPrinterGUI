@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text to Image</title>
+</head>
+<body>
+  <canvas id="textCanvas"></canvas>
+  <script>
+    function textToImage(text, font, fontSize, textColor, bgColor, outputFormat = 'image/jpeg') {
+        const canvas = document.getElementById('textCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas dimensions
+        canvas.width = 600; // Adjust as needed
+        canvas.height = 300; // Adjust as needed
+
+        // Set font
+        ctx.font = `${fontSize}px ${font}`;
+
+        // Measure text
+        const textMetrics = ctx.measureText(text);
+        const textWidth = textMetrics.width;
+        const textHeight = fontSize; // For single line text, height is same as font size
+
+        // Set background color
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Set text color
+        ctx.fillStyle = textColor;
+
+        // Center text
+        const x = 10;
+        const y = (canvas.height + textHeight) / 2;
+
+        // Draw text
+        ctx.fillText(text, x, y);
+
+        // Convert canvas to image
+        const dataUrl = canvas.toDataURL(outputFormat);
+        return dataUrl;
+    }
+
+    // Example usage
+    const text = "焢肉刈包(五花肉)"; // 'Hello, World' in Chinese
+    const font = 'HanWangKanDaYan Regular'; // or other Chinese font
+    const fontSize = 36;
+    const textColor = 'black';
+    const bgColor = 'white';
+
+    const imageDataUrl = textToImage(text, font, fontSize, textColor, bgColor);
+    
+    // Display the generated image
+    const img = new Image();
+    img.src = imageDataUrl;
+    document.body.appendChild(img);
+  </script>
+</body>
+</html>

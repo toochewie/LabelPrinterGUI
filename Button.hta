@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="IE=11"/>
+    <title>Love Bao Stickers</title>
+    <hta:application id="ButtonApp" applicationname="Love Bao Stickers" singleinstance="yes">
+    <style>
+        .rectangular-button {
+            width: 200px;
+            min-height: 130px;
+            border-radius: 10px; /* Adjust border radius for rounded corners */
+            background-color: #3498db;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            margin: 10px;
+            padding-top: 40px;
+			padding-left: 10px;
+			padding-right: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            cursor: pointer;
+            overflow: hidden;
+            word-wrap: break-word;
+            float: left;
+        }
+		/* Style for notifications */
+		.notification {
+			position: fixed;
+			top: 10px;
+			left: 50%;
+			transform: translateX(-50%); /* This ensures it's centered by moving it 50% of its width to the left */
+			background-color: #4CAF50;
+			color: white;
+			padding: 15px;
+			border-radius: 10px;
+			z-index: 1000; /* Ensure it is above all other content */
+			text-align: center; /* Ensure text within the notification is centered */
+			width: auto; /* Adjust width as needed */
+			min-width: 100px; /* Minimum width to avoid too small notifications */
+			box-sizing: border-box; /* Include padding and border in width calculation */
+		}
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+    var notification = null;
+	var graphics = "^FO300,150^GFA,1118,1118,13,,X01C,X07C,X0FC,W01FC,W0FCC,V01F0C,V07C0C,V0F00C,U01C00C,U03800E,U07I0E,U0EI0E,U0CI06,U08I06,T018I07,::S03F8I07,R03FF8I07,R0F8K06,Q03CL06,Q0EM0E,P018L01C,P03M038,P06M06,M01F8CM03,M0E0D8M038,L03003N018,L0CQ01C,K03R01C,J0FES0C,J07T0E,J02T0E,J03T06,J018L0CL06,K0CK048L06,J01EK0407FF0406,J0C78K03800C786,I0303F01E01CI03206,I060CJF07J01A06,I0C303IF0CJ01C06,0018C003C33L0C06,00718J036003800C06,00E3K01C003C01C06,00C6K0181C3C01807,010CK0101E3C018038,0308K0101F1E03I0E,061N01F1E07I07,042O0F8E06I018,0C6L0100F801CJ0C,184L010078018J06,188L01003007K03,108M08J0EK018,318M0CI03CK01C,21N03I0FM0C,23O0IFEM06,22P0FCN06,26R08M03,64P01FEM03,64P01EN03,6CP01O036,4CP01O01F2,48P01O01D4,48P01CN017C,68P01IFL013,68Q0FFEL01E,68R078L01,68R06M03,68R06M01C,6BCL0FCI03N06,218L066I03N018,2180864606430418M018,2182664907C19B1CM038,3182679B06619B37J01803,118F6398066599338I03F07,19DB630D066DDB31FI07FE6,0CR0707FCFE1FC,04R0600IF007C,06R0C00CFJ08,03Q0780082,01F8N0FF00106,003IFELF8I0FC,J07LF8,,:^FS";
+	
+    function clearNotification() {
+        if (notification) {
+            document.body.removeChild(notification);
+            notification = null;
+        }
+    }
+
+    var printQueue = [];
+	var isPrinting = false;
+
+	function buttonClicked(menuItem) {
+		// Clear existing notification
+		clearNotification();
+
+		// Queue this item for printing
+		printQueue.push(menuItem);
+		processPrintQueue();
+	}
+
+	function processPrintQueue() {
+		if (isPrinting || printQueue.length === 0) {
+			return;
+		}
+
+		isPrinting = true;
+		var menuItem = printQueue.shift();
+		var zplContent = "^XA" + graphics + 						//^XA starts ZPL file. Graphics is for the logo
+			"^CF0,50^FO20,40^FB400,3,0,C,0^FD" + menuItem + "^FS" + // Print menu item name 
+			"^XZ";													//End the ZPL file
+		// Write ZPL content to a temporary file
+		var filename = "print_" + Date.now() + ".zpl";
+		writeZPLToFile(zplContent, filename);
+
+		// Print ZPL file using the batch file
+		printZPLFile(filename, menuItem);
+		isPrinting = false;
+		processPrintQueue();
+	}
+
+	function writeZPLToFile(zplContent, filename) {
+		var fso = new ActiveXObject("Scripting.FileSystemObject");
+		var file = fso.CreateTextFile(filename, true);
+		file.Write(zplContent);
+		file.Close();
+	}
+
+
+	function printZPLFile(filename, menuItem) {
+		// Call the batch script to print the ZPL file
+		var shell = new ActiveXObject("WScript.Shell");
+		shell.Run("print.bat " + filename);
+
+		// Show notification
+		notification = document.createElement("div");
+		notification.className = "notification";
+		notification.innerHTML = "Printing " + menuItem;
+		document.body.appendChild(notification);
+		setTimeout(function() {
+			clearNotification(); // Clear notification after 3 seconds
+		}, 3000);
+	}
+
+	window.onload = function() {
+		generateCategoryButtons();
+	};
+
+
+
+    var categories = {
+        "Gua Bao": ["Original Pork Belly Gua Bao", "Original Lean Pork Gua Bao", "Crispy Pork Belly Gua Bao", 
+                    "Gochujang Cripsy Pork Belly Gua Bao", "BBQ Crispy Pork Belly Gua Bao", "Chicken Filet Gua Bao", 
+                    "Mala Pork Belly Gua Bao", "Mala Lean Pork Gua Bao", "Kimchi Pork Belly Gua Bao", "Kimchi Lean Pork Gua Bao",
+					"Crab Daddy Gua Bao"],
+        "Meal Box": ["Lu Rou Fan - Braised Pork Over Rice", "Braised Pork Belly Rice Plate", "Braised Lean Pork Rice Plate"]
+    };
+
+    function addBackButton() {
+        var backButton = document.createElement("div");
+        backButton.className = "rectangular-button";
+        backButton.innerHTML = "Back <br> &#8592;";
+        backButton.onclick = function() {
+            generateCategoryButtons(); // Go back to category selection
+        };
+        var buttonContainer = document.getElementById("buttonContainer");
+        buttonContainer.appendChild(backButton);
+    }
+
+    function generateCategoryButtons() {
+        var buttonContainer = document.getElementById("buttonContainer");
+        buttonContainer.innerHTML = ''; // Clear existing buttons
+        Object.keys(categories).forEach(function(category) {
+            var button = document.createElement("div");
+            button.className = "rectangular-button";
+            button.innerHTML = category;
+            button.onclick = function() {
+                generateItemButtons(category);
+            };
+            buttonContainer.appendChild(button);
+        });
+    }
+
+    function generateItemButtons(category) {
+        var buttonContainer = document.getElementById("buttonContainer");
+        buttonContainer.innerHTML = ''; // Clear existing buttons
+        addBackButton();
+        categories[category].forEach(function(item) {
+            var button = document.createElement("div");
+            button.className = "rectangular-button";
+            button.innerHTML = item;
+            button.onclick = function() {
+                buttonClicked(item);
+            };
+            buttonContainer.appendChild(button);
+        });
+    }
+
+    window.onload = function() {
+        generateCategoryButtons();
+    };
+</script>
+
+<h1>Love Bao Stickers</h1>
+<div id="buttonContainer"></div>
+
+</body>
+</html>

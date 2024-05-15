@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text to Image HTA</title>
+    <hta:application
+        applicationname="Text to Image HTA"
+        border="thin"
+        borderstyle="normal"
+        caption="yes"
+        showintaskbar="yes"
+        singleinstance="yes"
+        sysmenu="yes"
+        windowstate="normal">
+    <meta http-equiv="x-ua-compatible" content="IE=11"/> <!-- Ensure compatibility with IE 11 -->
+    <meta charset="UTF-8"> <!-- Ensure proper character encoding -->
+    <style>
+        @font-face {
+            font-family: "Pearl";
+            src: url(FakePearl-Light.woff); /* EOT font file */
+        }
+
+        body {
+            font-family: "Pearl", Arial, sans-serif; /* Fallback to Arial if the font is not available */
+        }
+    </style>
+    <script type="text/javascript">
+		var menuItemList = ["焢肉刈包", "瘦肉刈包", "雞排刈包", 
+							"泡菜焢肉刈包", "泡菜瘦肉刈包", "麻辣焢肉刈包", "麻辣瘦肉刈包",
+							"台灣香腸刈包", "魚排刈包", "脆皮五花肉刈包", "韓式辣醬脆皮五花肉刈包", "燒烤醬脆皮五花肉刈包", 
+							"炸軟殼蟹刈包","蒲燒鰻魚刈包", "素肉排刈包", "素五花刈包(蒟蒻)"
+						]
+						
+		var mealBoxMenuList = ["台式滷肉飯", "焢肉飯", "瘦肉飯", "滷雞腿飯","滷排骨飯", "滷豆腐飯", 
+							"大大雞排飯", "鹽酥雞飯", "排骨飯", "炸鱈魚排飯", 
+							"脆皮五花肉飯", "燒烤醬脆皮五花肉飯", "韓式辣醬脆皮五花肉飯",
+							"台灣香腸飯", "素肉排飯",  "素五花肉飯(蒟蒻)", "蒲燒鰻魚飯"]
+							
+		var redoList = ["焢肉刈包"]
+		
+		//Items need to be shifted on the x-coordinate to keep it centered. We can calculate this using the 
+		//following equation: 205 - (#OfCharacters * fontSize + paddingLeft + paddingRight)/2
+		/*function coordinates(){
+			for (var i=0; i < menuItemList.length; i++){
+				var textwidth = menuItemList[i].length;
+				textwidth = textwidth * 35 + 20;
+				var coord = 205 - textwidth/2;
+				alert(menuItemList[i] + coord);
+			}
+		}
+		*/
+		function run(){
+			for(var i = 0; i < redoList.length; i++){
+				saveImage(redoList[i]);
+			}
+		}
+		
+        function saveImage(menuItem) {
+            var canvas = document.getElementById('myCanvas');
+            var ctx = canvas.getContext('2d');
+
+            // Set canvas dimensions
+            canvas.width = 10 + menuItem.length * 35 + 10;
+            canvas.height = 50;
+
+            // Text attributes
+            var text = menuItem; // Chinese characters
+            var font = 'Pearl'; // Font family name
+            var fontSize = 35;
+            var textColor = 'black';
+            var bgColor = 'white';
+
+            // Set font
+            ctx.font = fontSize + 'px ' + font;
+
+            // Background color
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Text color
+            ctx.fillStyle = textColor;
+			
+			var textWidth = ctx.measureText(text).width;
+
+            // Calculate text position for left alignment
+            var x = (canvas.width - textWidth) / 2; // Left margin
+            var y = fontSize; // Top margin
+
+            // Draw the text
+            ctx.fillText(text, x, y);
+
+            // Convert canvas to image and save as file
+            var imgData = canvas.toDataURL("image/jpeg").replace(/^data:image\/jpeg;base64,/, "");
+            saveToFile(imgData, menuItem + ".jpg");
+
+            // Output the text for verification
+            document.getElementById('outputText').innerText = text;
+			var shell = new ActiveXObject("WScript.Shell")
+            shell.run("cmd /c curl --request POST http://api.labelary.com/v1/graphics --form file=@" + menuItem + ".jpg > " + menuItem + ".zpl");
+			shell.run("delete.bat " + menuItem + ".jpg");
+        }
+
+        function saveToFile(base64Data, filename) {
+            var stream = new ActiveXObject("ADODB.Stream");
+            stream.Type = 1; // Binary
+            stream.Open();
+            stream.Write(decodeBase64(base64Data));
+            stream.SaveToFile(filename, 2);
+            stream.Close();
+        }
+
+        function decodeBase64(base64) {
+            var xml = new ActiveXObject("MSXML2.DOMDocument");
+            var elem = xml.createElement("temp");
+            elem.dataType = "bin.base64";
+            elem.text = base64;
+            return elem.nodeTypedValue;
+        }
+    </script>
+</head>
+<body onload="run()">
+    <h1>Text to Image HTA</h1>
+    <p>Text: <span id="outputText"></span></p> <!-- Display the output text -->
+    <canvas id="myCanvas" style="display:none;"></canvas> <!-- Canvas is now part of the HTML -->
+</body>
+</html>

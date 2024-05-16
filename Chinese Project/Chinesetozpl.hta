@@ -35,24 +35,50 @@
 							"脆皮五花肉飯", "燒烤醬脆皮五花肉飯", "韓式辣醬脆皮五花肉飯",
 							"台灣香腸飯", "素肉排飯",  "素五花肉飯(蒟蒻)", "蒲燒鰻魚飯"]
 							
-		var redoList = ["焢肉刈包"]
 		
 		//Items need to be shifted on the x-coordinate to keep it centered. We can calculate this using the 
-		//following equation: 205 - (#OfCharacters * fontSize + paddingLeft + paddingRight)/2
+		//following equation: 203 - (#OfCharacters * fontSize + paddingLeft + paddingRight)/2
 		/*function coordinates(){
 			for (var i=0; i < menuItemList.length; i++){
 				var textwidth = menuItemList[i].length;
 				textwidth = textwidth * 35 + 20;
-				var coord = 205 - textwidth/2;
+				var coord = 203 - textwidth/2;
 				alert(menuItemList[i] + coord);
 			}
 		}
 		*/
 		function run(){
-			for(var i = 0; i < redoList.length; i++){
-				saveImage(redoList[i]);
+			for(var i = 0; i < menuItemList.length; i++){
+				saveImage(menuItemList[i]);
+			}
+			for(var i = 0; i < mealBoxMenuList.length; i++){
+				saveImage(mealBoxMenuList[i]);
 			}
 		}
+		
+		function modifyZPLFile(filename, newCoordinates) {
+			// Read the ZPL file content
+			var fso = new ActiveXObject("Scripting.FileSystemObject");
+			var file = fso.OpenTextFile(filename, 1); // 1: For reading
+			var zplContent = file.ReadAll();
+			file.Close();
+
+			// Replace coordinates in the ZPL content
+			for (var i = 0; i < newCoordinates.length; i++) {
+				var menuItem = newCoordinates[i].menuItem;
+				var xCoord = newCoordinates[i].xCoord;
+				var regex = new RegExp("\\^FO\\s*\\d+\\s*,\\s*\\d+\\s*", "g");
+				zplContent = zplContent.replace(regex, "^FO" + xCoord + ", 60"); // Assuming 60 for y-coordinate
+			}
+
+			// Overwrite the original ZPL file with the modified content
+            var outFile = fso.OpenTextFile(filename, 2); // 2: For writing (overwrite)
+            outFile.Write(zplContent);
+            outFile.Close();
+		}
+
+
+		
 		
         function saveImage(menuItem) {
             var canvas = document.getElementById('myCanvas');
@@ -95,8 +121,17 @@
             // Output the text for verification
             document.getElementById('outputText').innerText = text;
 			var shell = new ActiveXObject("WScript.Shell")
-            shell.run("cmd /c curl --request POST http://api.labelary.com/v1/graphics --form file=@" + menuItem + ".jpg > " + menuItem + ".zpl");
+            shell.run("cmd /c curl --request POST http://api.labelary.com/v1/graphics --form file=@" + menuItem + ".jpg > " + menuItem + ".zpl", 1, true);
 			shell.run("delete.bat " + menuItem + ".jpg");
+			
+			 // Calculate new coordinates
+			var textWidth = menuItem.length * 35 + 20;
+			var xCoord = 203 - textWidth / 2;
+
+			// Modify ZPL file with new coordinates
+			var zplFilename = menuItem + ".zpl"; // Assuming ZPL file has the same name as menuItem
+			var newCoordinates = [{ menuItem: menuItem, xCoord: xCoord }];
+			modifyZPLFile(zplFilename, newCoordinates);
         }
 
         function saveToFile(base64Data, filename) {

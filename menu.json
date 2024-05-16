@@ -173,5 +173,13 @@
 			"name": "Honey Lemonade with Aiyu Jelly",
 			"options": ["16 oz", "24 oz"]
 		}
+	],
+	"Small Bites":[
+		{
+			"name": "Popcorn Chicken",
+			"options": ["Salt and Pepper", "Spicy", "Plum Powder", "Seaweed"]
+		}
+	
+	
 	]
 }

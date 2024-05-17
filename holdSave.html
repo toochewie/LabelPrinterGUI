@@ -1,0 +1,128 @@
+function generateItemButtons(category) {
+    var buttonContainer = document.getElementById("buttonContainer");
+    buttonContainer.innerHTML = ''; // Clear existing buttons
+    addHeader(category);
+    addBackButton(generateCategoryButtons);
+    categories[category].forEach(function (item) {
+        var button = document.createElement("div");
+        button.className = "rectangular-button";
+        button.innerHTML = item.name;
+
+        function openOptions() {
+            generateOptionButtons(item, category);
+        }
+
+        button.onmousedown = function (e) {
+            if (e.button === 2) { // Right click
+                openOptions();
+            }
+        };
+
+        // Touch event to open options menu
+        button.ontouchstart = function (e) {
+            e.preventDefault(); // Prevent default touch behavior
+            openOptions();
+        };
+
+        buttonContainer.appendChild(button);
+    });
+}
+
+
+function generateItemButtons(category) {
+	var buttonContainer = document.getElementById("buttonContainer");
+	buttonContainer.innerHTML = ''; // Clear existing buttons
+	addHeader(category);
+	addBackButton(generateCategoryButtons);
+	categories[category].forEach(function (item) {
+		var button = document.createElement("div");
+		button.className = "rectangular-button";
+		button.innerHTML = item.name;
+
+		
+		
+		function openOptions() {
+			clearTimeout(holdTimer); // Clear the hold timer
+			
+		}
+
+		function startHold() {
+			var held = false;
+			holdTimer = setTimeout(function(){
+				held = true;
+				openOptions;
+			}, 500); // Hold for 0.5 seconds to activate options
+			function cancelHold() {
+				clearTimeout(holdTimer); // Clear the hold timer
+				if (!held) {
+						buttonClicked(item.name, category);
+					}
+			}
+			button.onmouseup = cancelHold;
+			button.onmouseleave = function(){
+					clearTimeout(holdTimer);
+					}
+		}
+		
+		button.onmousedown = startHold;
+		
+
+		// Right click event
+		button.oncontextmenu = function (e) {
+			e.preventDefault(); // Prevent default right-click context menu
+			openOptions();
+		};
+
+		buttonContainer.appendChild(button);
+	});
+}
+
+
+function generateItemButtons(category) {
+	var buttonContainer = document.getElementById("buttonContainer");
+	buttonContainer.innerHTML = ''; // Clear existing buttons
+	addHeader(category);
+	addBackButton(generateCategoryButtons);
+	categories[category].forEach(function(item) {
+		var button = document.createElement("div");
+		button.className = "rectangular-button";
+		button.innerHTML = item.name;
+
+		function startAction() {
+			var held = false;
+			var timer = setTimeout(function() {
+				held = true;
+				generateOptionButtons(item, category);
+			}, 500); // Hold for 0.5 seconds to activate options
+
+			function endAction() {
+				clearTimeout(timer);
+				if (!held) {
+					buttonClicked(item.name, category);
+				}
+			}
+
+			button.onmouseup = endAction;
+			button.onmouseleave = function(){
+				clearTimeout(timer);
+				}
+			// Equivalent touch events
+			button.ontouchend = endAction;
+			button.ontouchcancel = endAction;
+		}
+
+		button.onmousedown = startAction;
+		// Equivalent touch events
+		button.ontouchstart = function(e) {
+			e.preventDefault(); // Prevents additional mouse events in some browsers
+			startAction();
+
+
+
+
+
+		};
+
+		buttonContainer.appendChild(button);
+	});
+}

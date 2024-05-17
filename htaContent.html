@@ -6,7 +6,47 @@
     <title>Love Bao Stickers</title>
 	
     <style>
-        .rectangular-button {
+        .category-button {
+            width: 200px;
+            min-height: 130px;
+            border-radius: 10px;
+            background-color: #FF6F61;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            margin: 10px;
+            padding-top: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            cursor: pointer;
+            overflow: hidden;
+            word-wrap: break-word;
+            float: left;
+        }
+		.back-button {
+            width: 200px;
+            min-height: 130px;
+            border-radius: 10px;
+            background-color: #FF6F61;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            margin: 10px;
+            padding-top: 40px;
+            padding-left: 10px;
+            padding-right: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            cursor: pointer;
+            overflow: hidden;
+            word-wrap: break-word;
+            float: left;
+        }
+		.rectangular-button {
             width: 200px;
             min-height: 130px;
             border-radius: 10px;
@@ -56,13 +96,13 @@
             min-width: 100px;
             box-sizing: border-box;
         }
-		.item-header {
-			font-size: 30px; /* Adjust the font size as needed */
+		.heading-style {
+			font-size: 50px; /* Adjust the font size as needed */
 			font-weight: bold; /* Make the text bold */
 			text-align: center; /* Center align the text */
-			margin-top: 20px; /* Add space above the header */
-			margin-bottom: 0px; /* Add space below the header */
-			color: #3498db; /* Change the text color */
+			margin-top: 40px; /* Add space above the header */
+			margin-bottom: 20 px; /* Add space below the header */
+			color: #5B5EA6; /* Change the text color */
 		}
 
         .logo-container {
@@ -73,6 +113,7 @@
 			margin-top: 10px; /* Space from the top of the page */
 			margin-bottom: 20px;
 		}
+		
 
 		.padded {
 			max-width: 400px; /* Ensures the logo will not overflow its container */
@@ -91,11 +132,7 @@
 			}
 		}
 
-		h2 {
-			text-align: center;
-			margin-top: 20px; /* Add more space above the header */
-			padding: 10px 0; /* Adds padding around the text */
-		}
+		
 		
 
         #iconContainer {
@@ -112,7 +149,7 @@
         }
     </style>
 </head>
-<body style="overflow:hidden;">
+<body style="overflow:hidden;" oncontextmenu="return false;">
 
 <!-- Logo images wrapped in containers -->
 <div class="logo-container">
@@ -227,8 +264,6 @@
 			}
 		}
 		
-		
-		
 		var zplContent = "^XA" + graphic + // Graphics for the logo
 			"^CF0,30^FO0,10^FB406,3,0,C,0^FD" + menuItem + "^FS" + // Print menu item name 
 			chineseGraphics + optionsZPL +
@@ -264,17 +299,17 @@
             clearNotification(); // Clear notification after 3 seconds
         }, 3000);
     }
-	
-	
-	
+		
 //Functions for adding buttons
 
 	//Parameter for header. Must pass the text you want displayed.
 	function addHeader(header){
-		var itemNameHeader = document.createElement("h2");
-        itemNameHeader.className = "item-header"; // Add a class for styling
+		var headingContainer = document.getElementById("headingContainer");
+		headingContainer.innerHTML = '';
+		var itemNameHeader = document.createElement("h1");
+        itemNameHeader.className = "heading-style"; // Add a class for styling
         itemNameHeader.innerHTML = header
-        buttonContainer.appendChild(itemNameHeader);	
+        headingContainer.appendChild(itemNameHeader);	
 	}
 	
 	//Parameter for callback. Callback usually contains onButtonPress.
@@ -291,7 +326,7 @@
 	//Parameter for callback. Callback usually contains creating the categories/items.
     function addBackButton(callback) {
         var backButton = document.createElement("div");
-        backButton.className = "rectangular-button";
+        backButton.className = "back-button";
         backButton.innerHTML = "Back <br> &#8592;";
         backButton.onclick = callback;
         var buttonContainer = document.getElementById("buttonContainer");
@@ -299,9 +334,7 @@
     }
 
 	function addIconButton(callback){
-		var iconContainer= document.createElement('div');
-		iconContainer.id = 'iconContainer';
-		document.body.appendChild(iconContainer);
+
 
 		// Add the logo image
 		var iconImage = document.createElement('img');
@@ -309,8 +342,48 @@
 		iconImage.src = 'pig.png';
 		iconImage.alt = 'Logo';
 		iconContainer.appendChild(iconImage);
-				
-		function startAction() {
+		
+		iconImage.onmousedown = function (e) {
+				if (e.button === 2) { // Right click
+					var buttonContainer = document.getElementById("buttonContainer");
+					buttonContainer.innerHTML = ''; // Clear existing buttons
+					addHeader("Secret Menu");
+					addBackButton(generateCategoryButtons);
+					secretMenu = ["Kick Me", "Bruce"]
+					secretMenu.forEach(function (item) {
+						var button = document.createElement("div");
+						button.className = "rectangular-button";
+						button.innerHTML = item;
+						button.onclick = function () {
+							var zplContent = "^XA" + "^CF0,70^FO0,60^FB406,3,0,C,0^FD" + item + 
+								"^FS^XZ";
+							
+							// Write ZPL content to a temporary file
+							var filename = "print_" + Date.now() + ".zpl";
+							writeZPLToFile(zplContent, filename);
+
+							// Print ZPL file using the batch file
+							printZPLFile(filename, item);
+							isPrinting = false;
+							processPrintQueue();
+							
+						};
+						buttonContainer.appendChild(button);
+					});
+			
+				}else{
+
+				}
+			};
+
+			// Touch event to open options menu
+			iconImage.ontouchstart = function (e) {
+				e.preventDefault(); // Prevent default touch behavior
+				openOptions();
+			};
+
+			
+		/*function startAction() {
 			var held = false;
 			var timer = setTimeout(function() {
 				held = true;
@@ -362,7 +435,7 @@
 		iconImage.ontouchstart = function(e) {
 			e.preventDefault(); // Prevents additional mouse events in some browsers
 			startAction();
-		}
+		}*/
 	}
 
 
@@ -370,6 +443,7 @@
         var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.innerHTML = ''; // Clear existing buttons
 		
+		//Header
 		var listRandom = ["Bruce Lee", "你知道紅豆冰沙很好喝嗎？", "你有吃過豆腐飯嗎？很好吃哦", 
 						"鷄排飯粉絲", "高麗菜刈包", "滷蛋飯", "請踢我", "一半梅子·一半辣"];
 		var randomGreeting = listRandom[Math.floor(Math.random() * listRandom.length)];
@@ -377,7 +451,7 @@
         
 		Object.keys(categories).forEach(function (category) {
             var button = document.createElement("div");
-            button.className = "rectangular-button";
+            button.className = "category-button";
             button.innerHTML = category;
             button.onclick = function () {
                 generateItemButtons(category);
@@ -385,49 +459,35 @@
             buttonContainer.appendChild(button);
         });
 		
-		addIconButton();
+
 	
     }
 
-    function generateItemButtons(category) {
+	function generateItemButtons(category) {
 		var buttonContainer = document.getElementById("buttonContainer");
 		buttonContainer.innerHTML = ''; // Clear existing buttons
+		
 		addHeader(category);
 		addBackButton(generateCategoryButtons);
-		categories[category].forEach(function(item) {
+		
+		categories[category].forEach(function (item) {
 			var button = document.createElement("div");
 			button.className = "rectangular-button";
 			button.innerHTML = item.name;
 
-			function startAction() {
-				var held = false;
-				var timer = setTimeout(function() {
-					held = true;
-					generateOptionButtons(item, category);
-				}, 500); // Hold for 0.5 seconds to activate options
-
-				function endAction() {
-					clearTimeout(timer);
-					if (!held) {
-						buttonClicked(item.name, category);
-					}
-				}
-
-				button.onmouseup = endAction;
-				button.onmouseleave = function(){
-					clearTimeout(timer);
-					}
-				// Equivalent touch events
-				button.ontouchend = endAction;
-				button.ontouchcancel = endAction;
+			function openOptions() {
+				generateOptionButtons(item, category);
 			}
 
-			button.onmousedown = startAction;
-			// Equivalent touch events
-			button.ontouchstart = function(e) {
-				e.preventDefault(); // Prevents additional mouse events in some browsers
-				startAction();
+			button.onmousedown = function (e) {
+				if (e.button === 2) { // Right click
+					openOptions();
+				}else{
+					buttonClicked(item.name, category);
+				}
 			};
+
+			
 
 			buttonContainer.appendChild(button);
 		});
@@ -508,8 +568,11 @@
 
     window.onload = function () {
         loadCategories();
+		addIconButton();
     };
 </script>
-<div id="buttonContainer"></div>
+<div id="headingContainer" oncontextmenu="return false;"></div>
+<div id="buttonContainer" oncontextmenu="return false;"></div>
+<div id="iconContainer" oncontextmenu="return false;"></div>
 </body>
 </html>

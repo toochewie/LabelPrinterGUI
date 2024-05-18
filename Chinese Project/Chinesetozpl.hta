@@ -34,10 +34,11 @@
 							"台灣香腸飯", "素肉排飯",  "素五花肉飯(蒟蒻)", "蒲燒鰻魚飯"
 						]
 						
-		var extrasList = ["鷄絲涼麵", "素涼麵", "鹽酥鷄", "鷄排", "炸排骨",
+		var extrasList = ["鹽酥杏鮑菇", "蜂蜜檸檬愛玉", "鷄絲涼麵", "素涼麵", "鹽酥鷄", "鷄排", "炸排骨",
 						"梅子地瓜薯條", "芋頭薯條", "炸花枝丸", "炸魚豆腐", 
 						"冬瓜檸檬茶", "紅豆沙了牛奶", "綠豆沙了牛奶"
 						]
+		var redoList = ["蒲燒鰻魚飯"]
 							
 		
 		//Items need to be shifted on the x-coordinate to keep it centered. We can calculate this using the 
@@ -52,8 +53,8 @@
 		}
 		*/
 		function run(){
-			for(var i = 0; i < extrasList.length; i++){
-				saveImage(extrasList[i]);
+			for(var i = 0; i < redoList.length; i++){
+				saveImage(redoList[i]);
 			}
 		}
 		

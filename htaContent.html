@@ -6,66 +6,69 @@
     <title>Love Bao Stickers</title>
 	
     <style>
-        .category-button {
-            width: 200px;
-            min-height: 130px;
-            border-radius: 10px;
-            background-color: #FF6F61;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            border: none;
-            margin: 10px;
-            padding-top: 40px;
-            padding-left: 10px;
-            padding-right: 10px;
-            box-sizing: border-box;
-            text-align: center;
-            cursor: pointer;
-            overflow: hidden;
-            word-wrap: break-word;
-            float: left;
-        }
+		.logo-container {
+			height: 100px; /* Smaller height for smaller screens */
+		}
+		.category-button {
+			width: 200px;
+			min-height: 130px;
+			border-radius: 10px;
+			background-color: #FF6F61;
+			color: white;
+			font-size: 20px;
+			font-weight: bold;
+			border: none;
+			margin: 10px;
+			padding-top: 40px;
+			padding-left: 10px;
+			padding-right: 10px;
+			box-sizing: border-box;
+			text-align: center;
+			cursor: pointer;
+			overflow: hidden;
+			word-wrap: break-word;
+			float: left;
+		}
 		.back-button {
-            width: 200px;
-            min-height: 130px;
-            border-radius: 10px;
-            background-color: #FF6F61;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            border: none;
-            margin: 10px;
-            padding-top: 40px;
-            padding-left: 10px;
-            padding-right: 10px;
-            box-sizing: border-box;
-            text-align: center;
-            cursor: pointer;
-            overflow: hidden;
-            word-wrap: break-word;
-            float: left;
-        }
+			width: 200px;
+			min-height: 130px;
+			border-radius: 10px;
+			background-color: #FF6F61;
+			color: white;
+			font-size: 20px;
+			font-weight: bold;
+			border: none;
+			margin: 10px;
+			padding-top: 40px;
+			padding-left: 10px;
+			padding-right: 10px;
+			box-sizing: border-box;
+			text-align: center;
+			cursor: pointer;
+			overflow: hidden;
+			word-wrap: break-word;
+			float: left;
+		}
 		.rectangular-button {
-            width: 200px;
-            min-height: 130px;
-            border-radius: 10px;
-            background-color: #3498db;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            border: none;
-            margin: 10px;
-            padding-top: 40px;
-            padding-left: 10px;
-            padding-right: 10px;
-            box-sizing: border-box;
-            text-align: center;
-            cursor: pointer;
-            overflow: hidden;
-            word-wrap: break-word;
-            float: left;
-        }
+			width: 200px;
+			min-height: 130px;
+			border-radius: 10px;
+			background-color: #3498db;
+			color: white;
+			font-size: 20px;
+			font-weight: bold;
+			border: none;
+			margin: 10px;
+			padding-top: 40px;
+			padding-left: 10px;
+			padding-right: 10px;
+			box-sizing: border-box;
+			text-align: center;
+			cursor: pointer;
+			overflow: hidden;
+			word-wrap: break-word;
+			float: left;
+		}
 		.print-button {
 			background-color: DarkRed; 
 			position: fixed; 
@@ -81,73 +84,81 @@
 			padding: 10px;
 			color: white;
 		}
-        .notification {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            z-index: 1000;
-            text-align: center;
-            width: auto;
-            min-width: 100px;
-            box-sizing: border-box;
-        }
+		.notification {
+			position: fixed;
+			top: 10px;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: #4CAF50;
+			color: white;
+			padding: 15px;
+			border-radius: 10px;
+			z-index: 1000;
+			text-align: center;
+			width: auto;
+			min-width: 100px;
+			box-sizing: border-box;
+		}
 		.heading-style {
-			font-size: 50px; /* Adjust the font size as needed */
+			font-size: 30px; /* Adjust the font size as needed */
 			font-weight: bold; /* Make the text bold */
 			text-align: center; /* Center align the text */
 			margin-top: 40px; /* Add space above the header */
-			margin-bottom: 20 px; /* Add space below the header */
+			margin-bottom: 20px; /* Add space below the header */
 			color: #5B5EA6; /* Change the text color */
 		}
-
-        .logo-container {
+		.logo-container {
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			height: auto; /* Set a fixed height for the container */
+			height: 100px; /* Set a fixed height for the container */
 			margin-top: 10px; /* Space from the top of the page */
 			margin-bottom: 20px;
 		}
-		
-
 		.padded {
 			max-width: 400px; /* Ensures the logo will not overflow its container */
-
 		}
-
-		@media (max-width: 768px) {
-			.logo-container {
-				height: 60px; /* Smaller height for smaller screens */
+		@media (min-width: 1921px) {
+			.category-button {
+				width: 500px;
+				min-height: 325px;
+				font-size: 50px;
+				padding-top: 60px;
+			}
+			.back-button {
+				width: 400px;
+				min-height: 240px;
+				font-size: 40px;
+			}
+			.rectangular-button {
+				width: 400px;
+				min-height: 240px;
+				font-size: 40px;
+				padding-top: 20px;
+			}
+			.print-button {
+				bottom: 50px;
+				width: 300px;
+				min-height: 100px;
+				font-size: 40px;
+			}
+			.heading-style {
+				font-size: 50px;
+				margin-top: 40px;
 			}
 		}
-
-		@media (min-width: 769px) {
-			.logo-container {
-				height: 100px; /* Larger fixed height for larger screens */
-			}
-		}
-
-		
-		
-
         #iconContainer {
             position: fixed;
             bottom: 20px;
             right: 20px;
         }
-
-
         #iconImage {
             width: 100px; /* Adjust the size as needed */
             height: auto;
             cursor: pointer; /* Change cursor to pointer */
         }
-    </style>
+	</style>
+
 </head>
 <body style="overflow:hidden;" oncontextmenu="return false;">
 
@@ -327,7 +338,7 @@
     function addBackButton(callback) {
         var backButton = document.createElement("div");
         backButton.className = "back-button";
-        backButton.innerHTML = "Back <br> &#8592;";
+        backButton.innerHTML = "<br>Back <br> &#8592;";
         backButton.onclick = callback;
         var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.appendChild(backButton);
@@ -344,43 +355,45 @@
 		iconContainer.appendChild(iconImage);
 		
 		iconImage.onmousedown = function (e) {
-				if (e.button === 2) { // Right click
+			if (e.button === 2) { // Right click
+				var headingContainer = document.getElementById("headingContainer");
+				if (headingContainer.innerHTML === '<h1 class="heading-style">Red Bean Milk Slush</h1>'){
 					var buttonContainer = document.getElementById("buttonContainer");
 					buttonContainer.innerHTML = ''; // Clear existing buttons
 					addHeader("Secret Menu");
 					addBackButton(generateCategoryButtons);
-					secretMenu = ["Kick Me", "Bruce"]
+					secretMenu = [
+							{name: "Kick Me", ZPL:"^XA^CF0,70^FO0,60^FB406,3,0,C,0^FDKick Me^FS^XZ"},
+							{name: "Bruce", ZPL:"^XA^CF0,70^FO0,60^FB406,3,0,C,0^FDBruce^FS^XZ"},
+							{name: "Logo Only", ZPL: "XA" + big_pig_graphic + "XZ"}		
+					]
 					secretMenu.forEach(function (item) {
 						var button = document.createElement("div");
 						button.className = "rectangular-button";
-						button.innerHTML = item;
+						button.innerHTML = "<br>" + item.name;
 						button.onclick = function () {
-							var zplContent = "^XA" + "^CF0,70^FO0,60^FB406,3,0,C,0^FD" + item + 
-								"^FS^XZ";
+							var zplContent = item.ZPL;
 							
 							// Write ZPL content to a temporary file
 							var filename = "print_" + Date.now() + ".zpl";
 							writeZPLToFile(zplContent, filename);
 
 							// Print ZPL file using the batch file
-							printZPLFile(filename, item);
+							printZPLFile(filename, item.name);
 							isPrinting = false;
-							processPrintQueue();
-							
+							processPrintQueue();	
 						};
 						buttonContainer.appendChild(button);
 					});
-			
-				}else{
-
 				}
-			};
+			}
+		};
 
-			// Touch event to open options menu
-			iconImage.ontouchstart = function (e) {
-				e.preventDefault(); // Prevent default touch behavior
-				openOptions();
-			};
+		// Touch event to open options menu
+		iconImage.ontouchstart = function (e) {
+			e.preventDefault(); // Prevent default touch behavior
+			openOptions();
+		};
 
 			
 		/*function startAction() {
@@ -452,7 +465,7 @@
 		Object.keys(categories).forEach(function (category) {
             var button = document.createElement("div");
             button.className = "category-button";
-            button.innerHTML = category;
+            button.innerHTML = "<br>" + category;
             button.onclick = function () {
                 generateItemButtons(category);
             };
@@ -473,7 +486,7 @@
 		categories[category].forEach(function (item) {
 			var button = document.createElement("div");
 			button.className = "rectangular-button";
-			button.innerHTML = item.name;
+			button.innerHTML = "<br>" + item.name;
 
 			function openOptions() {
 				generateOptionButtons(item, category);
@@ -514,14 +527,16 @@
 		// Define additional options for "Meal Box"
 		if (category === "Meal Box") {
 			extraOptions = ["No Pickled Greens", "No Cabbage", "No Egg", "No Rice", "Extra Egg"];
-			item.options = item.options.concat(extraOptions);
+		}else if(category === "Drinks"){
+			extraOptions = ["16 oz", "24 oz", "Less Ice", "No Ice"];
 		}
+		item.options = item.options.concat(extraOptions);
 			
 		// Create buttons for each option
 		item.options.forEach(function(option) {
 			var button = document.createElement("div");
 			button.className = "rectangular-button";
-			button.innerHTML = option; 									// Display only the option on the button
+			button.innerHTML = "<br>" + option; 									// Display only the option on the button
 
 			button.onclick = function() {
 				if (!item.selectedOptions) {

@@ -1,167 +1,22 @@
 <html>
 <head>
     <meta charset="UTF-8">
+	<!--Set language to allow Chinese (without strange bolding)-->
 	<meta http-equiv="content-language" content="zh" />
-    <meta http-equiv="x-ua-compatible" content="IE=11"/>
+	<!--Set compatibility to newer IE version-->	
+    <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+	<!--styles.css stores button information-->	
+	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="options.css">
     <title>Love Bao Stickers</title>
-	
-    <style>
-		.logo-container {
-			height: 100px; /* Smaller height for smaller screens */
-		}
-		.category-button {
-			width: 200px;
-			min-height: 130px;
-			border-radius: 10px;
-			background-color: #FF6F61;
-			color: white;
-			font-size: 20px;
-			font-weight: bold;
-			border: none;
-			margin: 10px;
-			padding-top: 40px;
-			padding-left: 10px;
-			padding-right: 10px;
-			box-sizing: border-box;
-			text-align: center;
-			cursor: pointer;
-			overflow: hidden;
-			word-wrap: break-word;
-			float: left;
-		}
-		.back-button {
-			width: 200px;
-			min-height: 130px;
-			border-radius: 10px;
-			background-color: #FF6F61;
-			color: white;
-			font-size: 20px;
-			font-weight: bold;
-			border: none;
-			margin: 10px;
-			padding-top: 40px;
-			padding-left: 10px;
-			padding-right: 10px;
-			box-sizing: border-box;
-			text-align: center;
-			cursor: pointer;
-			overflow: hidden;
-			word-wrap: break-word;
-			float: left;
-		}
-		.rectangular-button {
-			width: 200px;
-			min-height: 130px;
-			border-radius: 10px;
-			background-color: #3498db;
-			color: white;
-			font-size: 20px;
-			font-weight: bold;
-			border: none;
-			margin: 10px;
-			padding-top: 40px;
-			padding-left: 10px;
-			padding-right: 10px;
-			box-sizing: border-box;
-			text-align: center;
-			cursor: pointer;
-			overflow: hidden;
-			word-wrap: break-word;
-			float: left;
-		}
-		.print-button {
-			background-color: DarkRed; 
-			position: fixed; 
-			bottom: 30px; 
-			left: 50%; 
-			transform: translateX(-50%); 
-			width: 220px; 
-			min-height: 50px; 
-			border-radius: 5px; 
-			font-size: 20px; 
-			font-weight: bold;
-			text-align: center;
-			padding: 10px;
-			color: white;
-		}
-		.notification {
-			position: fixed;
-			top: 10px;
-			left: 50%;
-			transform: translateX(-50%);
-			background-color: #4CAF50;
-			color: white;
-			padding: 15px;
-			border-radius: 10px;
-			z-index: 1000;
-			text-align: center;
-			width: auto;
-			min-width: 100px;
-			box-sizing: border-box;
-		}
-		.heading-style {
-			font-size: 30px; /* Adjust the font size as needed */
-			font-weight: bold; /* Make the text bold */
-			text-align: center; /* Center align the text */
-			margin-top: 40px; /* Add space above the header */
-			margin-bottom: 20px; /* Add space below the header */
-			color: #5B5EA6; /* Change the text color */
-		}
-		.logo-container {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100px; /* Set a fixed height for the container */
-			margin-top: 10px; /* Space from the top of the page */
-			margin-bottom: 20px;
-		}
-		.padded {
-			max-width: 400px; /* Ensures the logo will not overflow its container */
-		}
-		@media (min-width: 1921px) {
-			.category-button {
-				width: 500px;
-				min-height: 325px;
-				font-size: 50px;
-				padding-top: 60px;
-			}
-			.back-button {
-				width: 400px;
-				min-height: 240px;
-				font-size: 40px;
-			}
-			.rectangular-button {
-				width: 400px;
-				min-height: 240px;
-				font-size: 40px;
-				padding-top: 20px;
-			}
-			.print-button {
-				bottom: 50px;
-				width: 300px;
-				min-height: 100px;
-				font-size: 40px;
-			}
-			.heading-style {
-				font-size: 50px;
-				margin-top: 40px;
-			}
-		}
-        #iconContainer {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-        }
-        #iconImage {
-            width: 100px; /* Adjust the size as needed */
-            height: auto;
-            cursor: pointer; /* Change cursor to pointer */
-        }
-	</style>
+
 
 </head>
-<body style="overflow:hidden;" oncontextmenu="return false;">
-
+<body style="overflow:auto;">
+<div class="toggle-button-wrapper" id="toggleButton">
+        <span class="toggle-text">Options</span>
+        <div class="toggle-button"></div>
+</div>
 <!-- Logo images wrapped in containers -->
 <div class="logo-container">
     <img class="padded" src="logo.jpg" alt="Love Bao Logo">
@@ -169,13 +24,25 @@
 
 
 <script type="text/javascript">	
-	
+	var optionsEnabled = false;
     var notification = null;
     var small_pig_graphic = "^FO310,150^GFA,1118,1118,13,,X01C,X07C,X0FC,W01FC,W0FCC,V01F0C,V07C0C,V0F00C,U01C00C,U03800E,U07I0E,U0EI0E,U0CI06,U08I06,T018I07,::S03F8I07,R03FF8I07,R0F8K06,Q03CL06,Q0EM0E,P018L01C,P03M038,P06M06,M01F8CM03,M0E0D8M038,L03003N018,L0CQ01C,K03R01C,J0FES0C,J07T0E,J02T0E,J03T06,J018L0CL06,K0CK048L06,J01EK0407FF0406,J0C78K03800C786,I0303F01E01CI03206,I060CJF07J01A06,I0C303IF0CJ01C06,0018C003C33L0C06,00718J036003800C06,00E3K01C003C01C06,00C6K0181C3C01807,010CK0101E3C018038,0308K0101F1E03I0E,061N01F1E07I07,042O0F8E06I018,0C6L0100F801CJ0C,184L010078018J06,188L01003007K03,108M08J0EK018,318M0CI03CK01C,21N03I0FM0C,23O0IFEM06,22P0FCN06,26R08M03,64P01FEM03,64P01EN03,6CP01O036,4CP01O01F2,48P01O01D4,48P01CN017C,68P01IFL013,68Q0FFEL01E,68R078L01,68R06M03,68R06M01C,6BCL0FCI03N06,218L066I03N018,2180864606430418M018,2182664907C19B1CM038,3182679B06619B37J01803,118F6398066599338I03F07FE6,19DB630D066DDB31FI07FE6,0CR0707FCFE1FC,04R0600IF007C,06R0C00CFJ08,03Q0780082,01F8N0FF00106,003IFELF8I0FC,J07LF8,,:^FS";
     var big_pig_graphic = "^FO30,150^GFA,4183,4183,47,,::::gH038gL01KF,gH07CgL07KFC,Y03807E018R01CO0LFEgJ078,Y03F0FF07CR07FO0MFgI01FC,Y03F8FF07ER07F8N0MFgI03FE,Y03F8FF8FER07FCN0MFgI07FE,Q01CL03FCFF8FEL07FJ07FCN07KFEO03ER0FFE,Q03CL01FCFF1FEK03JF81IF8M01KFCO07FR0FFEE,Q0E4L01F8FF1FEK07JFC7IFEN03IFEP07F8P01LF,P0304M0F0FF1FCK07JFEKFM07001E078N07FCP01MF,P0604O0JFCK07JFEKFM07CJ0FCN07FEP03MFE,P0404K0E1LFCK03JFC7JFM0FF0F81FCN07FEP03NFC,P0806J01F3MF8K0JF81IFEM0FF0FC1F8N0IFP07NFE,P0806J01FBMFEK03FFC007FFN07F0FE1FO0IFP07JFE07FF,P0806J01F8NFK03FJ07F86M07F07EQ0IFP0IFEJ07F8,N018006J01FC00LFK07FJ07F8FM03E03CQ0MFCK0FFEK01F8,N04I04J01FCK01FFK0FFJ07F9FK01FJ0801CN0NFK0FFEL0FC,M01J0CJ01FC01EI03FJ01FEJ07F3FK03F07LFN0NF8J0FFCL07C,Q018J03FC7BIF03EJ01FCI03JFK07OF8M0NF8J0FFCL07C,K018CJ08J03FC7DIFC3EJ03FC079LFJ07OFCM0NF8J0FF83F8I07C,K04L0CJ03F87E7FFE1CJ07F807DLFJ07IFI0IFEM0NF8J0FF07FFE007C,J078L0CJ03F87E03FC18J07FC0FDKFEJ0FF8L0FEM0MFEK07E03IFC07C,J02M04J01F87E003CL07FF0FC3JFK0FFK0307EM0FFEP03003IFE07C,J01I02I04J01F07E007CL07FFCF800FFL0FFI070F87EM0FFET07FFE07C,J0180080C06K0E07FF878L071FCF001FEL0FF1F0F0F83EM0FFET01FFE078,J0CE0830144M07JF8N0FEI03F8L0FE1F8F0F018M0FFER078007E0F8,I0113FC800C4M07JF8M037FI07EM0FC3F8F001CN0FFER0FC007E0F8,I024007060C4M07CFFEN0F3FI0FCM0783F8F001EN0FFER0FE007C0F,I04800626084Y01F3F801F9FEK0207F0FC01EN0FFER0FE007C1F,I09J076183N01FFN03F3FF03F3FF8L07F07F81EN0FFEQ01FE007C1E,0012I04331008K0387IF8L07E1FF87F1FF8L07C01F8P0FFEQ01FE00F83E,001J04383004K07EKFL07C1FFCFF81FCN0F02Q0FFEQ01IF8F83C,0024I04106002K07LF8K0781FFDFFC07CM01F8R0FFEQ01KF83C,002J0201C001K07F3JFCL01DFFBFFC07CM03F8R07FEQ01KF83,0028J0FFI018J07F07IFCL03DFB3IF87CM07IFCP07FCQ03FC0F8,I08K02J08J0FF8780FEL07DF879FFE7CM0KFP07FCQ03FC,001L0EJ08J0FF8780FEL0F9F001FFE7CM0KF8M0NF8M03FC,005Q0EJ0KF0FEK01F1F001FFC7CL01FF9FF8L03NFEM01FC,005L08J0D8I0KF8FCK01E3F003FC078L01FF01F8L07NFEM01FE,005L0FCI0AJ0KF8FCM07E003FC078L03FF03F8L03NFCM01FE,005L01J08J0JFC0FCM07C003FC078L03FF7FFM01MFEO0FE,005L01J04J0FF0780FCM078001FC1F8L03FEIFN0MFP07F,O018I01J0FF0780FCQ01JFM07F87FF8gJ03FC,002M0CI03J0FF0700FCR0F7FEM03E03FFEgJ01JFE,002L01600E2J0JF87FCgJ0803IF8gJ07IFC,001L011FF3CJ0MF8gL03IF8gJ01FFE,I08K030780CJ07LFgM03C7F,I06J03C09M03C1IF8gM038,J0JFC006,,::::::::::::::3I03F818070FFC003FE003I0FE001FFE030030C06060380300C1FF81FE0FFC00303830IF03F8180E0FFC380C,3I0FFC1C060FF8003FF007803FFI0FFE078030E0E060380381C1FF83FE0FFC003878387FF07FC1C0E0FFC380C,3001E1E1C0E0CJ0307007807838I0E007803060F0E07803C1C1C007060CJ038F0380700E0E1C0E0C003C0C,3001C070C0E0CJ030300F80701CI0E00FC03070F0E07C03E1C1C007I0CJ039E0380701C001C0E0C003E0C,30038070E0C0CJ030700DC0E01CI0E00CC03071F0C0EC03F1C1C007I0CJ03BC03807018001C0E0C003F0C,3003803061C0CJ03FE01CC0E00CI0E00CC03031B9C0CE0371C1C003E00EJ03F803807018001FFE0E003B8C,300380307180FEI03FE018E0E00CI0E01CE0303I981C60339C1FC01FC0FEI03FC03807038001FFE0FE03BCC,300380303380FEI038783860E00CI0E01860303B9981C7031DC1FC007E0FEI03CC03807038001FFE0FE039CC,300380703B00CJ0303838F0E01CI0E03870301B1F83C7030FC1CJ0F0CJ038E03807018001C0E0C0038FC,300180701F00CJ030183FF0601CI0E03FF0301F0F03FF8307C1CJ070CJ03870380701C001C0E0C00387C,3001C0E01F00CJ030387FF87038I0E07FF8300F0F03FF8307C1C006070CJ03870380701E0C1C0E0C00383C,3FE0FBC01E00FF800387860383EF8I0E06018300E0F07018303C1FF078F0FF8003838380700FFE1C0E0FF8383C,3FF07F800E00FFC003FF0E0181FEJ0E0E01C300E060601C301C1FF83FE0FFC0038183007007FC180E0FFC381C,3FE01EI0C00FFC003FC04008078J04040083004060600830080FF80F80FFC0010183002001F018040FFC100C,,:::::^FS";
 	var categories = {}; // Initialize categories as an empty object
     var printQueue = [];
     var isPrinting = false;
+	
+	document.addEventListener('DOMContentLoaded', function() {
+		var toggleButton = document.getElementById('toggleButton');
+		toggleButton.addEventListener('click', function() {
+			var toggleSwitch = toggleButton.querySelector('.toggle-button');
+			var toggleText = toggleButton.querySelector('.toggle-text');
+			toggleSwitch.classList.toggle('on');
+			optionsEnabled = !optionsEnabled;
+			//toggleText.textContent = toggleSwitch.classList.contains('on') ? 'On' : 'Off';
+		});
+	});
+	
 
     //Function pulls data from the menu.json and loads them into the categories variable.
     //This is done at the start of the program, along with displaying the categories.
@@ -338,15 +205,15 @@
     function addBackButton(callback) {
         var backButton = document.createElement("div");
         backButton.className = "back-button";
-        backButton.innerHTML = "<br>Back <br> &#8592;";
+        backButton.innerHTML = "Back <br> &#8592;";
         backButton.onclick = callback;
         var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.appendChild(backButton);
     }
-
+	
+	
 	function addIconButton(callback){
-
-
+	
 		// Add the logo image
 		var iconImage = document.createElement('img');
 		iconImage.id = 'iconImage';
@@ -365,7 +232,7 @@
 					secretMenu = [
 							{name: "Kick Me", ZPL:"^XA^CF0,70^FO0,60^FB406,3,0,C,0^FDKick Me^FS^XZ"},
 							{name: "Bruce", ZPL:"^XA^CF0,70^FO0,60^FB406,3,0,C,0^FDBruce^FS^XZ"},
-							{name: "Logo Only", ZPL: "XA" + big_pig_graphic + "XZ"}		
+							{name: "Logo Only", ZPL: "^XA" + big_pig_graphic + "^XZ"}		
 					]
 					secretMenu.forEach(function (item) {
 						var button = document.createElement("div");
@@ -453,6 +320,7 @@
 
 
     function generateCategoryButtons() {
+		toggleButton.style.display = 'none';
         var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.innerHTML = ''; // Clear existing buttons
 		
@@ -463,9 +331,9 @@
 		addHeader(randomGreeting);
         
 		Object.keys(categories).forEach(function (category) {
-            var button = document.createElement("div");
+            var button = document.createElement("button");
             button.className = "category-button";
-            button.innerHTML = "<br>" + category;
+            button.innerHTML = category;
             button.onclick = function () {
                 generateItemButtons(category);
             };
@@ -475,25 +343,48 @@
 
 	
     }
+	
+	function changeBackgroundColor(item){
+		var searchTerms = [
+						{terms: ["Original", "Braised Pork", "Braised Lean Pork", "Braised Drum"], color: "#BC243C"},
+						{terms: ["Chicken"], color: "#ff7f7f"},
+						{terms: ["Vegetarian", "Cucumber", "Tofu"], color: "#88B04B"},
+						{terms: ["Crab", "Eel", "Fish"], color: "#34568B"},
+						{terms: ["Mala"], color: "#ea002a"},
+						{terms: ["Crispy"], color: "#955251"}
+						]
+		for (var i = 0; i < searchTerms.length; i++){
+			for (var j=0; j < searchTerms[i].terms.length; j++){
+				if (item.indexOf(searchTerms[i].terms[j]) !== -1){
+					return searchTerms[i].color;
+				}
+			}
+		}
+		return "#3498db";
+	}
 
 	function generateItemButtons(category) {
+		toggleButton.style.display = 'inline-flex';
 		var buttonContainer = document.getElementById("buttonContainer");
 		buttonContainer.innerHTML = ''; // Clear existing buttons
-		
 		addHeader(category);
 		addBackButton(generateCategoryButtons);
 		
 		categories[category].forEach(function (item) {
-			var button = document.createElement("div");
+			var button = document.createElement("button");
 			button.className = "rectangular-button";
-			button.innerHTML = "<br>" + item.name;
-
+			button.innerHTML = item.name;
+			
+			var backgroundColor = changeBackgroundColor(item.name);
+			button.style.backgroundColor = backgroundColor;
+			
 			function openOptions() {
 				generateOptionButtons(item, category);
+				toggleButton.style.display = 'none';
 			}
 
 			button.onmousedown = function (e) {
-				if (e.button === 2) { // Right click
+				if (e.button === 2 || optionsEnabled) { // Right click
 					openOptions();
 				}else{
 					buttonClicked(item.name, category);
@@ -534,9 +425,9 @@
 			
 		// Create buttons for each option
 		item.options.forEach(function(option) {
-			var button = document.createElement("div");
+			var button = document.createElement("button");
 			button.className = "rectangular-button";
-			button.innerHTML = "<br>" + option; 									// Display only the option on the button
+			button.innerHTML = option; 									// Display only the option on the button
 
 			button.onclick = function() {
 				if (!item.selectedOptions) {
@@ -586,8 +477,9 @@
 		addIconButton();
     };
 </script>
-<div id="headingContainer" oncontextmenu="return false;"></div>
-<div id="buttonContainer" oncontextmenu="return false;"></div>
-<div id="iconContainer" oncontextmenu="return false;"></div>
+
+<div id="headingContainer"></div>
+<div id="buttonContainer"></div>
+<div id="iconContainer"></div>
 </body>
 </html>

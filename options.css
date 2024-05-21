@@ -1,0 +1,49 @@
+.toggle-button-wrapper {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	cursor: pointer;
+	background-color: #ccc;
+	border-radius: 10px; /* Adjusted for bigger toggle */
+	padding: 10px 20px; /* Adjusted for bigger toggle */
+	position: fixed;
+	bottom: 20px;
+	right: 150px;
+	display: none; /* Initially hidden */
+}
+
+.toggle-button {
+	position: relative;
+	display: inline-block;
+	width: 90px; /* Increased 2 times from 60px */
+	height: 45px; /* Increased 2 times from 30px */
+	background-color: red;
+	border: none;
+	border-radius: 45px; /* Adjusted for bigger toggle */
+	transition: background-color 0.3s ease;
+}
+
+.toggle-button::before {
+	content: '';
+	position: absolute;
+	top: 4.5px; /* Adjusted for bigger toggle */
+	left: 4.5px; /* Adjusted for bigger toggle */
+	width: 36px; /* Increased 2 times from 24px */
+	height: 36px; /* Increased 2 times from 24px */
+	background-color: white;
+	border-radius: 50%;
+	transition: transform 0.3s ease;
+}
+
+.toggle-button.on {
+	background-color: #4caf50;
+}
+
+.toggle-button.on::before {
+	transform: translateX(45px); /* Adjusted for bigger toggle */
+}
+
+.toggle-text {
+	margin-bottom: 10px; /* Space between text and toggle button */
+	font-size: 24px;
+}

@@ -1,0 +1,157 @@
+button {
+  font-family: inherit
+}
+.logo-container {
+	height: 100px; /* Smaller height for smaller screens */
+}
+.category-button {
+	width: 200px;
+	min-height: 130px;
+	border-radius: 10px;
+	background-color: #FF6F61;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	border: none;
+	margin: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	box-sizing: border-box;
+	text-align: center;
+	cursor: pointer;
+	overflow: hidden;
+	word-wrap: break-word;
+	float: left;
+}
+.back-button {
+	width: 200px;
+	min-height: 130px;
+	border-radius: 10px;
+	background-color: #FF6F61;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	border: none;
+	margin: 10px;
+	padding-top: 40px;
+	padding-left: 10px;
+	padding-right: 10px;
+	box-sizing: border-box;
+	text-align: center;
+	cursor: pointer;
+	overflow: hidden;
+	word-wrap: break-word;
+	float: left;
+}
+.rectangular-button {
+	width: 200px;
+	min-height: 130px;
+	border-radius: 10px;
+	background-color: #3498db;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	border: none;
+	margin: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	box-sizing: border-box;
+	text-align: center;
+	cursor: pointer;
+	overflow: hidden;
+	word-wrap: break-word;
+	float: left;
+}
+.print-button {
+	background-color: DarkRed; 
+	position: fixed; 
+	bottom: 30px; 
+	left: 50%; 
+	transform: translateX(-50%); 
+	width: 220px; 
+	min-height: 50px; 
+	border-radius: 5px; 
+	font-size: 20px; 
+	font-weight: bold;
+	text-align: center;
+	padding: 10px;
+	color: white;
+}
+.notification {
+	position: fixed;
+	top: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: #4CAF50;
+	color: white;
+	padding: 15px;
+	border-radius: 10px;
+	z-index: 1000;
+	text-align: center;
+	width: auto;
+	min-width: 100px;
+	box-sizing: border-box;
+}
+.heading-style {
+	font-size: 30px; /* Adjust the font size as needed */
+	font-weight: bold; /* Make the text bold */
+	text-align: center; /* Center align the text */
+	margin-top: 40px; /* Add space above the header */
+	margin-bottom: 20px; /* Add space below the header */
+	color: #5B5EA6; /* Change the text color */
+}
+.logo-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100px; /* Set a fixed height for the container */
+	margin-top: 10px; /* Space from the top of the page */
+	margin-bottom: 20px;
+}
+.padded {
+	max-width: 400px; /* Ensures the logo will not overflow its container */
+}
+@media (min-width: 1921px) {
+	.category-button {
+		width: 500px;
+		min-height: 325px;
+		font-size: 50px;
+		padding-top: 60px;
+	}
+	.back-button {
+		width: 400px;
+		min-height: 240px;
+		font-size: 40px;
+	}
+	.rectangular-button {
+		width: 400px;
+		min-height: 240px;
+		font-size: 40px;
+		padding-top: 20px;
+	}
+	.print-button {
+		bottom: 50px;
+		width: 300px;
+		min-height: 100px;
+		font-size: 40px;
+	}
+	.heading-style {
+		font-size: 50px;
+		margin-top: 40px;
+	}
+}
+#optionsContainer {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+}
+#iconContainer {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+}
+#iconImage {
+	width: 100px; /* Adjust the size as needed */
+	height: auto;
+	cursor: pointer; /* Change cursor to pointer */
+}

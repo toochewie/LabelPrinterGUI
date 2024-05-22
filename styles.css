@@ -116,7 +116,6 @@ button {
 		width: 500px;
 		min-height: 325px;
 		font-size: 50px;
-		padding-top: 60px;
 	}
 	.back-button {
 		width: 400px;
@@ -127,7 +126,6 @@ button {
 		width: 400px;
 		min-height: 240px;
 		font-size: 40px;
-		padding-top: 20px;
 	}
 	.print-button {
 		bottom: 50px;

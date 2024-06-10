@@ -10,17 +10,20 @@
 	<link rel="stylesheet" href="options.css">
     <title>Love Bao Stickers</title>
 
-
 </head>
 <body style="overflow:auto;">
+
 <div class="toggle-button-wrapper" id="toggleButton">
-        <span class="toggle-text">Options</span>
-        <div class="toggle-button"></div>
+    <span class="toggle-text">Options</span>
+    <div class="toggle-button"></div>
 </div>
+
 <!-- Logo images wrapped in containers -->
 <div class="logo-container">
     <img class="padded" src="logo.jpg" alt="Love Bao Logo">
 </div>
+
+
 
 
 <script type="text/javascript">	
@@ -91,7 +94,6 @@
     var printQueue = [];
     var isPrinting = false;
 	
-	
 
     //Function pulls data from the menu.json and loads them into the categories variable.
     //This is done at the start of the program, along with displaying the categories.
@@ -109,11 +111,9 @@
         }
     }
 
-    
-
     // Modified function to find an item in the category array
     //IE does not support .find()...
-    //Returns the item object.
+    //Returns the entire item object.
     function findItemInCategory(category, itemName) {
         var categoryArray = categories[category];
         for (var i = 0; i < categoryArray.length; i++) {
@@ -128,15 +128,16 @@
 	//Takes in the item, category, and options. Adds items to print queue.
 	//Runs processPrintQueue.
     function buttonClicked(menuItem, category, options) {
-        // Queue this item for printing
+        //Find the item object from the menu.
         var item = findItemInCategory(category, menuItem);
-		
-        printQueue.push({ category: category, item: item, options: options });
+		// Queue this item for printing.
+        printQueue.push({ category: category, item: item, options: options});
 		processPrintQueue();
     }
 
    //Function prints the next item in queue. 
     function processPrintQueue() {
+		//Jump out if already printing.
 		if (isPrinting || printQueue.length === 0) {
 			return;
 		}
@@ -146,7 +147,9 @@
 		var printItem = printQueue.shift();		//Queue in the stored object
 		
 		var category = printItem.category;		//Uses the Queue stored category
-		var options = printItem.options;		//Uses the Queue stored options
+		
+		//Options logic
+		var options = printItem.options;							//Uses the Queue stored options
 		if(Array.isArray(options)){
 			var graphic = small_pig_graphic;
 			 // Sort options by length, longest to shortest
@@ -156,13 +159,7 @@
 		}else {
 			var graphic = big_pig_graphic;
 		}
-				
-		var item = printItem.item;				//Used to get index of item
-		var chinese = item.chinese;
-		var menuItem = item.name;
 		
-		// Get the Chinese graphics from the found item
-		var chineseGraphics = item ? item.chinese : "";
 		var optionsZPL = "";
 		var coordinates = [
 			[30, 120],   // First option coordinates
@@ -180,10 +177,18 @@
 			}
 		}
 		
-		var zplContent = "^XA" + graphic + // Graphics for the logo
-			"^CF0,30^FO0,10^FB406,3,0,C,0^FD" + menuItem + "^FS" + // Print menu item name 
-			chineseGraphics + optionsZPL +
-			"^XZ"; // End the ZPL file
+		//Use the item object to get the Chinese name. Might as well get the name of the item from there as well.
+		var item = printItem.item;
+		var chinese = item.chinese;
+		var menuItem = item.name;
+		
+		// Get the Chinese graphics from the found item
+		var chineseGraphics = item ? item.chinese : "";					//If no Chinese is available, return ""
+		
+		
+		var zplContent = "^XA" + graphic + 							// Graphics for the logo
+			"^CF0,30^FO0,10^FB406,3,0,C,0^FD" + menuItem + "^FS" + 	// Print menu item name 
+			chineseGraphics + optionsZPL + "^XZ"; 					// End the ZPL file
 			
 		// Write ZPL content to a temporary file
 		var filename = "print_" + Date.now() + ".zpl";
@@ -203,11 +208,12 @@
     }
 
     function printZPLFile(filename, menuItem) {
+		//Create a Notification
+		printItemNotification(menuItem);
+		
         // Call the batch script to print the ZPL file
         var shell = new ActiveXObject("WScript.Shell");
         shell.Run("silentPrinter.lnk " + filename);
-		//Create a Notification
-		printItemNotification(menuItem);
     }
 		
 //Functions for adding buttons
@@ -236,6 +242,7 @@
 	//Parameter for callback. Callback usually contains creating the categories/items.
     function addBackButton(callback) {
         var backButton = document.createElement("div");
+		backButton.id = "backButton";
         backButton.className = "back-button";
         backButton.innerHTML = "Back <br> &#8592;";
         backButton.onclick = callback;
@@ -256,9 +263,13 @@
 		iconImage.onmousedown = function (e) {
 			if (e.button === 2) { // Right click
 				var headingContainer = document.getElementById("headingContainer");
+				
+				//If we hold the icon while in the Red Bean Milk Slush Submenu, show the "secret" menu
 				if (headingContainer.innerHTML === '<h1 class="heading-style">Red Bean Milk Slush</h1>'){
+					//First, clear existing buttons
 					var buttonContainer = document.getElementById("buttonContainer");
-					buttonContainer.innerHTML = ''; // Clear existing buttons
+					buttonContainer.innerHTML = '';
+					//Add a header and back button (directs to category)
 					addHeader("Secret Menu");
 					addBackButton(generateCategoryButtons);
 					secretMenu = [
@@ -284,6 +295,10 @@
 						};
 						buttonContainer.appendChild(button);
 					});
+					
+					//Add Credits Info?
+					
+					
 				}
 			}
 		};
@@ -380,8 +395,8 @@
 		var searchTerms = [
 						{terms: ["Original", "Braised Pork", "Braised Lean Pork", "Braised Drum"], color: "#BC243C"},
 						{terms: ["Chicken"], color: "#ff7f7f"},
-						{terms: ["Vegetarian", "Cucumber", "Tofu"], color: "#88B04B"},
-						{terms: ["Crab", "Eel", "Fish"], color: "#34568B"},
+						{terms: ["Crab", "Eel", "Fish", "Octopus"], color: "#34568B"},						
+						{terms: ["Vegetarian", "Cucumber", "Tofu", "Fries", "King"], color: "#88B04B"},
 						{terms: ["Mala"], color: "#ea002a"},
 						{terms: ["Crispy"], color: "#955251"}
 						]
@@ -417,7 +432,7 @@
 			}
 
 			button.onmousedown = function (e) {
-				if (e.button === 2 || optionsEnabled) { // Right click
+				if (e.button === 2 || optionsEnabled) { // If right click or Options Toggle Enabled
 					openOptions();
 				}else{
 					buttonClicked(item.name, category);
@@ -431,78 +446,175 @@
 	}
 
 
-    function generateOptionButtons(item, category) {
+	function generateOptionButtons(item, category) {
+		//Initialize the selected options
+		item.selectedOptions = [];
 		var extraOptions = [];
-		var buttonContainer = document.getElementById("buttonContainer");
-		buttonContainer.innerHTML = ''; 								// Clear existing buttons
-
-		addHeader(item.name);											//Add header so user knows what item it is
-
-		// Add back button
-		addBackButton(function() { 
-			generateItemButtons(category);
-			item.selectedOptions = [];
-			item.options.splice(item.options.length - extraOptions.length, extraOptions.length);
-		});
-
-		// Add print button
-		addPrintButton(function() { buttonClicked(item.name, category, item.selectedOptions); });
 		
-		// Define additional options for "Meal Box"
 		if (category === "Meal Box") {
-			extraOptions = ["No Pickled Greens", "No Cabbage", "No Egg", "No Rice", "Extra Egg", "Extra Pickled Greens", "Extra Cabbage"];
-		}else if(category === "Drinks"){
+			extraOptions = ["No Pickled Greens", "No Cabbage", "No Egg", "No Rice", "Extra Pickled Greens", "Extra Cabbage", "Extra Egg"];
+		} else if (category === "Drinks") {
 			extraOptions = ["16 oz", "24 oz", "Less Ice", "No Ice"];
 		}
 		
-		item.options = item.options.concat(extraOptions);
+		//Get the buttonContainer and clear it
+		var buttonContainer = document.getElementById("buttonContainer");
+		buttonContainer.innerHTML = ''; 
+		
+		//Adjust the button container to center the options
+		buttonContainer.style.justifyContent = "center";
+		
+		//Create the optionsContainer. Set it's background color.
+		var optionsContainer = document.createElement("div");
+		optionsContainer.id = "optionsContainer";
+		optionsContainer.className = "optionsContainer";
+		var backgroundColor = changeBackgroundColor(item.name);
+		optionsContainer.style.backgroundColor = backgroundColor;
+		
+		var leftColumn = document.createElement("div");
+		leftColumn.id = "leftColumn";
+		leftColumn.className = "column";
+
+		var rightColumn = document.createElement("div");
+		rightColumn.id = "rightColumn";
+		rightColumn.className = "column";
+
+		optionsContainer.appendChild(leftColumn);
+		optionsContainer.appendChild(rightColumn);
+		buttonContainer.appendChild(optionsContainer);
+		
+
+		//Create the extraOptionsContainer. Set it's background color.
+		var extraOptionsContainer = document.createElement("div");
+		extraOptionsContainer.id = "extraOptionsContainer";
+		extraOptionsContainer.className = "optionsContainer";
+		var backgroundColor = changeBackgroundColor(item.name);
+		extraOptionsContainer.style.backgroundColor = backgroundColor;
+		
+		var extraLeftColumn = document.createElement("div");
+		extraLeftColumn.id = "extraLeftColumn";
+		extraLeftColumn.className = "column";
+
+		var extraRightColumn = document.createElement("div");
+		extraRightColumn.id = "extraRightColumn";
+		extraRightColumn.className = "column";
+
+		extraOptionsContainer.appendChild(extraLeftColumn);
+		extraOptionsContainer.appendChild(extraRightColumn);
+		buttonContainer.appendChild(extraOptionsContainer);
+		
+		//Add the Header
+		addHeader(item.name);
+
+		//Add the Print button
+		//May want to rewrite this later and append it directly into button container.
+		addPrintButton(function() { buttonClicked(item.name, category, item.selectedOptions); });
+		
+		//Add the back button
+		addBackButton(function() { 
+			generateItemButtons(category);
+			item.selectedOptions = [];
+			//Hide the options containers
+			optionsContainer.style.display = 'none';
+			extraOptionsContainer.style.display = 'none';
+			//Reset the justify style back to left
+			buttonContainer.style.justifyContent = "flex-start";
+		});
+		
+
+		var buttonContainer = document.getElementById('buttonContainer');
+		var backButton = document.getElementById('backButton');
+
+		// Create an invisible line break element to move the back button down
+		var hrBreak = document.createElement('hr');
+		hrBreak.style.flexBasis = "100%";
+		hrBreak.style.height = '0';
+		hrBreak.style.margin = '0';
+		hrBreak.style.border = '0';
+
+		// Insert the line break before the backButton
+		buttonContainer.insertBefore(hrBreak, backButton);
+
+		//item.options = item.options.concat(extraOptions);
+		var fullOptionsList = item.options.concat(extraOptions);
+		
+		//Loop and create options
+		fullOptionsList.forEach(function(option, index) {
+			var optionItem = document.createElement("div");
+			optionItem.className = "option-item";
+
+			var label = document.createElement("label");
+			label.className = "option-label";
+			label.innerHTML = option;
 			
-		// Create buttons for each option
-		item.options.forEach(function(option) {
-			var button = document.createElement("button");
-			button.className = "rectangular-button";
-			button.innerHTML = option; 									// Display only the option on the button
-
-			button.onclick = function() {
-				if (!item.selectedOptions) {
-					item.selectedOptions = [];
-				}
-
-				var isOptionSelected = false;
-				for (var i = 0; i < item.selectedOptions.length; i++) {
-					if (item.selectedOptions[i] === option) {
-						isOptionSelected = true;
-						break;
+			var toggle = document.createElement("label");
+			toggle.className = "toggle-switch";
+			
+			var input = document.createElement("input");
+			input.type = "checkbox";
+			input.onchange = function() {
+				if (input.checked) {
+					if (item.selectedOptions.length < 4) {
+						item.selectedOptions.push(option);
+					} else {
+						input.checked = false;
+						showNotification("You can only select up to 4 options!");
 					}
-				}
-				//Can't have more than 4 options selected
-				var optionsLength = (item.selectedOptions.length < 4);
-				
-				if (!isOptionSelected && optionsLength) {
-					item.selectedOptions.push(option);
-					button.style.backgroundColor = "green";			
-				}else {
-					if(!isOptionSelected && !optionsLength){
-						// Show notification
-						notification = document.createElement("div");
-						notification.className = "notification";
-						notification.innerHTML = "You can only select up to 4 options!";
-						document.body.appendChild(notification);
-						setTimeout(function () {
-							clearNotification(); // Clear notification after 3 seconds
-						}, 3000);
-					}
+				} else {
 					item.selectedOptions = item.selectedOptions.filter(function(opt) {
 						return opt !== option;
 					});
-					button.style.backgroundColor = "";
 				}
 			};
 
-			buttonContainer.appendChild(button);
-		});
+			var slider = document.createElement("span");
+			slider.className = "toggle-slider";
 
+			toggle.appendChild(input);
+			toggle.appendChild(slider);
+			optionItem.appendChild(label);
+			optionItem.appendChild(toggle);
+			if(index < fullOptionsList.length - extraOptions.length){
+				if (index % 2 === 0) {
+					leftColumn.appendChild(optionItem);
+				} else {
+					rightColumn.appendChild(optionItem);
+				}
+			}else{
+				if (index % 2 === 0) {
+					extraLeftColumn.appendChild(optionItem);
+				} else {
+					extraRightColumn.appendChild(optionItem);
+				}
+			}
+			
+		});
+		
+		if(item.options.length){
+			optionsContainer.style.display = 'flex';  // Show the container again after updating
+		}else{
+			optionsContainer.style.display = 'none';
+		}
+		if(extraOptions.length){
+			extraOptionsContainer.style.display = 'flex';  // Show the container again after updating
+		}else{
+			extraOptionsContainer.style.display = 'none';
+		}
 	}
+
+	function showNotification(message) {
+		if (notification) {
+			clearNotification();
+		}
+		notification = document.createElement("div");
+		notification.className = "notification";
+		notification.innerHTML = message;
+		document.body.appendChild(notification);
+		setTimeout(function () {
+			clearNotification();
+		}, 3000);
+	}
+
 
 
 
@@ -513,7 +625,7 @@
 </script>
 
 <div id="headingContainer"></div>
-<div id="buttonContainer"></div>
+<div id="buttonContainer" class = "flexContainer"></div>
 <div id="iconContainer"></div>
 </body>
 </html>

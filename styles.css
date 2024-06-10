@@ -4,6 +4,13 @@ button {
 .logo-container {
 	height: 100px; /* Smaller height for smaller screens */
 }
+
+.flexContainer {
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+}
+
 .category-button {
 	width: 200px;
 	min-height: 130px;
@@ -42,6 +49,7 @@ button {
 	overflow: hidden;
 	word-wrap: break-word;
 	float: left;
+	
 }
 .rectangular-button {
 	width: 200px;
@@ -121,6 +129,7 @@ button {
 		width: 400px;
 		min-height: 240px;
 		font-size: 40px;
+		padding-top: 100px;
 	}
 	.rectangular-button {
 		width: 400px;
@@ -138,11 +147,7 @@ button {
 		margin-top: 40px;
 	}
 }
-#optionsContainer {
-	position: fixed;
-	top: 20px;
-	right: 20px;
-}
+
 #iconContainer {
 	position: fixed;
 	bottom: 20px;

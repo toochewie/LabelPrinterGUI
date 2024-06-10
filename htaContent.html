@@ -13,18 +13,6 @@
 </head>
 <body style="overflow:auto;">
 
-<div class="toggle-button-wrapper" id="toggleButton">
-    <span class="toggle-text">Options</span>
-    <div class="toggle-button"></div>
-</div>
-
-<!-- Logo images wrapped in containers -->
-<div class="logo-container">
-    <img class="padded" src="logo.jpg" alt="Love Bao Logo">
-</div>
-
-
-
 
 <script type="text/javascript">	
 	//Options Scripts and Variables
@@ -241,12 +229,14 @@
 
 	//Parameter for callback. Callback usually contains creating the categories/items.
     function addBackButton(callback) {
-        var backButton = document.createElement("div");
+		var backButton = document.createElement("div");
 		backButton.id = "backButton";
         backButton.className = "back-button";
         backButton.innerHTML = "Back <br> &#8592;";
         backButton.onclick = callback;
-        var buttonContainer = document.getElementById("buttonContainer");
+		backButton.classList.add("rectangular-button");
+		backButton.classList.add("back-button");
+		var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.appendChild(backButton);
     }
 	
@@ -271,7 +261,11 @@
 					buttonContainer.innerHTML = '';
 					//Add a header and back button (directs to category)
 					addHeader("Secret Menu");
-					addBackButton(generateCategoryButtons);
+					addBackButton( function(){
+						generateCategoryButtons();
+						//Reset the justify style back to left
+						buttonContainer.style.justifyContent = "flex-start";
+					});
 					secretMenu = [
 							{name: "Kick Me", ZPL:"^XA^CF0,70^FO0,60^FB406,3,0,C,0^FDKick Me^FS^XZ"},
 							{name: "Bruce", ZPL:"^XA^CF0,70^FO0,60^FB406,3,0,C,0^FDBruce^FS^XZ"},
@@ -368,6 +362,7 @@
 
     function generateCategoryButtons() {
 		toggleButton.style.display = 'none';
+		
         var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.innerHTML = ''; // Clear existing buttons
 		
@@ -379,17 +374,15 @@
         
 		Object.keys(categories).forEach(function (category) {
             var button = document.createElement("button");
-            button.className = "category-button";
+            button.classList.add("rectangular-button");
+			button.classList.add("category-button");
             button.innerHTML = category;
             button.onclick = function () {
                 generateItemButtons(category);
             };
             buttonContainer.appendChild(button);
         });
-		
-
-	
-    }
+	}
 	
 	function changeBackgroundColor(item){
 		var searchTerms = [
@@ -624,8 +617,24 @@
     };
 </script>
 
+<!-- Logo images wrapped in containers -->
+<div class="logo-container">
+    <img class="padded" src="logo.jpg" alt="Love Bao Logo">
+</div>
+
 <div id="headingContainer"></div>
 <div id="buttonContainer" class = "flexContainer"></div>
-<div id="iconContainer"></div>
+
+<footer id="footer" class = "footer">
+	<div class="toggle-button-wrapper" id="toggleButton">
+		<span class="toggle-text">Options</span>
+		<div class="toggle-button"></div>
+	</div>
+	<div id="iconContainer"></div>
+	
+</footer>
+
+
+
 </body>
 </html>

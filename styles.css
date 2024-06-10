@@ -1,6 +1,7 @@
 button {
   font-family: inherit
 }
+
 .logo-container {
 	height: 100px; /* Smaller height for smaller screens */
 }
@@ -11,65 +12,38 @@ button {
   flex-flow: row wrap;
 }
 
-.category-button {
-	width: 200px;
-	min-height: 130px;
-	border-radius: 10px;
-	background-color: #FF6F61;
-	color: white;
-	font-size: 20px;
-	font-weight: bold;
-	border: none;
-	margin: 10px;
-	padding-left: 10px;
-	padding-right: 10px;
-	box-sizing: border-box;
-	text-align: center;
-	cursor: pointer;
-	overflow: hidden;
-	word-wrap: break-word;
-	float: left;
-}
-.back-button {
-	width: 200px;
-	min-height: 130px;
-	border-radius: 10px;
-	background-color: #FF6F61;
-	color: white;
-	font-size: 20px;
-	font-weight: bold;
-	border: none;
-	margin: 10px;
-	padding-top: 40px;
-	padding-left: 10px;
-	padding-right: 10px;
-	box-sizing: border-box;
-	text-align: center;
-	cursor: pointer;
-	overflow: hidden;
-	word-wrap: break-word;
-	float: left;
-	
-}
+/* Base class for common styles */
 .rectangular-button {
-	width: 200px;
-	min-height: 130px;
-	border-radius: 10px;
-	background-color: #3498db;
-	color: white;
-	font-size: 20px;
-	font-weight: bold;
-	border: none;
-	margin: 10px;
-	padding-left: 10px;
-	padding-right: 10px;
-	box-sizing: border-box;
-	text-align: center;
-	cursor: pointer;
-	overflow: hidden;
-	word-wrap: break-word;
-	float: left;
+    width: 200px;
+    height: 130px;
+    border-radius: 10px;
+    background-color: #3498db; /* Default background color */
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    margin: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+    word-wrap: break-word;
+    float: left;
 }
+
+/* Specific styles for category button */
+.category-button {
+    background-color: #FF6F61;
+}
+
+/* Specific styles for back button */
+.back-button {
+    background-color: #FF6F61;
+    padding-top: 45px;
+}
+
 .print-button {
 	background-color: DarkRed; 
 	position: fixed; 
@@ -122,19 +96,19 @@ button {
 @media (min-width: 1921px) {
 	.category-button {
 		width: 500px;
-		min-height: 325px;
-		font-size: 50px;
-	}
-	.back-button {
-		width: 400px;
 		min-height: 240px;
-		font-size: 40px;
-		padding-top: 100px;
+		font-size: 50px;
 	}
 	.rectangular-button {
 		width: 400px;
 		min-height: 240px;
 		font-size: 40px;
+	}
+	.back-button {
+		width: 400px;
+		min-height: 240px;
+		font-size: 40px;
+		padding-top: 10px;
 	}
 	.print-button {
 		bottom: 50px;
@@ -148,13 +122,24 @@ button {
 	}
 }
 
+.footer {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	position: absolute; 
+    bottom: 20px; 
+    
+    z-index: 10;
+	width: 98%;
+	
+}
+
 #iconContainer {
-	position: fixed;
-	bottom: 20px;
-	right: 20px;
+	margin-left: 10px;
+	order: 2;
 }
 #iconImage {
-	width: 100px; /* Adjust the size as needed */
+	width: 120px; /* Adjust the size as needed */
 	height: auto;
 	cursor: pointer; /* Change cursor to pointer */
 }

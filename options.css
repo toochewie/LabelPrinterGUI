@@ -6,10 +6,8 @@
 	background-color: #ccc;
 	border-radius: 10px; /* Adjusted for bigger toggle */
 	padding: 10px 20px; /* Adjusted for bigger toggle */
-	position: fixed;
-	bottom: 20px;
-	right: 150px;
 	display: none; /* Initially hidden */
+	order: 1;
 }
 
 .toggle-button {

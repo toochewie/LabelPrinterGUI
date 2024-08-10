@@ -51,13 +51,12 @@
     display: flex;
     justify-content: space-around;
     width: 45%;
-    max-width: 600px;
     padding: 10px;
-	margin: 10px;
-	margin-top: 30px;
-    border: 1px solid #ccc;
+    margin: 10px;
+    margin-top: 30px;
     border-radius: 10px;
     background-color: #FF6F61;
+	font-size: 16px; /*default font size*/
 }
 
 .column {
@@ -69,21 +68,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 12.5px 0; /* Adjusted margin for spacing */
+    margin: 20px 0; /* Adjusted margin for spacing */
 }
 
 .option-label {
     margin-right: 18.75px; /* Adjusted margin for spacing */
     font-size: 1.25em; /* Font size increased to 1.25 times bigger */
-	color: white;
-	font-weight: bold;
+    color: white;
+    font-weight: bold;
 }
 
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 62.5px; /* Width increased to 1.25 times bigger */
-    height: 35px; /* Height increased to 1.25 times bigger */
+    width: 3.9em; /* Adjusted width to be relative to font size */
+    height: 2.2em; /* Adjusted height to be relative to font size */
     flex-shrink: 0; /* Prevents the toggle from shrinking */
 }
 
@@ -100,16 +99,16 @@
     bottom: 0;
     background-color: #ccc;
     transition: .4s;
-    border-radius: 17.5px; /* Adjusted border radius for new size */
+    border-radius: 1.1em; /* Adjusted border radius for new size */
 }
 
 .toggle-slider:before {
     position: absolute;
     content: "";
-    height: 27.5px; /* Increased size to 1.25 times bigger */
-    width: 27.5px; /* Increased size to 1.25 times bigger */
-    left: 3.75px; /* Adjusted position for new size */
-    bottom: 3.75px; /* Adjusted position for new size */
+    height: 1.75em; /* Increased size to be relative to font size */
+    width: 1.75em; /* Increased size to be relative to font size */
+    left: 0.25em; /* Adjusted position for new size */
+    bottom: 0.25em; /* Adjusted position for new size */
     background-color: white;
     transition: .4s;
     border-radius: 50%;
@@ -120,5 +119,85 @@ input:checked + .toggle-slider {
 }
 
 input:checked + .toggle-slider:before {
-    transform: translateX(27.5px); /* Adjusted for new size */
+    transform: translateX(1.75em); /* Adjusted for new size */
+}
+
+
+@media (min-width: 1921px) {
+	.optionsContainer {
+		display: flex;
+		justify-content: space-around;
+		width: 45%;
+		padding: 10px;
+		margin: 10px;
+		margin-top: 30px;
+		border: 1px solid #ccc;
+		border-radius: 10px;
+		background-color: #FF6F61;
+		font-size: 28px; /*parent container, so font size will affect other sizes*/
+	}
+
+	.column {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.option-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 20px 0; /* Adjusted margin for spacing */
+	}
+
+	.option-label {
+		margin-right: 18.75px; /* Adjusted margin for spacing */
+		font-size: 1.25em; /* Font size increased to 1.25 times bigger */
+		color: white;
+		font-weight: bold;
+	}
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 3.9em; /* Adjusted width to be relative to font size */
+		height: 2.2em; /* Adjusted height to be relative to font size */
+		flex-shrink: 0; /* Prevents the toggle from shrinking */
+	}
+
+	.toggle-switch input {
+		display: none;
+	}
+
+	.toggle-slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		transition: .4s;
+		border-radius: 1.1em; /* Adjusted border radius for new size */
+	}
+
+	.toggle-slider:before {
+		position: absolute;
+		content: "";
+		height: 1.75em; /* Increased size to be relative to font size */
+		width: 1.75em; /* Increased size to be relative to font size */
+		left: 0.25em; /* Adjusted position for new size */
+		bottom: 0.25em; /* Adjusted position for new size */
+		background-color: white;
+		transition: .4s;
+		border-radius: 50%;
+	}
+
+	input:checked + .toggle-slider {
+		background-color: #2196F3;
+	}
+
+	input:checked + .toggle-slider:before {
+		transform: translateX(1.75em); /* Adjusted for new size */
+	}
+
 }

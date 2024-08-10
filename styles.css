@@ -2,6 +2,7 @@ button {
   font-family: inherit
 }
 
+
 .logo-container {
 	height: 100px; /* Smaller height for smaller screens */
 }
@@ -41,23 +42,11 @@ button {
 /* Specific styles for back button */
 .back-button {
     background-color: #FF6F61;
-    padding-top: 45px;
+    padding-top: 10px;
 }
 
 .print-button {
-	background-color: DarkRed; 
-	position: fixed; 
-	bottom: 30px; 
-	left: 50%; 
-	transform: translateX(-50%); 
-	width: 220px; 
-	min-height: 50px; 
-	border-radius: 5px; 
-	font-size: 20px; 
-	font-weight: bold;
-	text-align: center;
-	padding: 10px;
-	color: white;
+	background-color: DarkRed;
 }
 .notification {
 	position: fixed;
@@ -94,12 +83,12 @@ button {
 	max-width: 400px; /* Ensures the logo will not overflow its container */
 }
 @media (min-width: 1921px) {
-	.category-button {
-		width: 500px;
-		min-height: 240px;
-		font-size: 50px;
-	}
 	.rectangular-button {
+		width: 400px;
+		min-height: 240px;
+		font-size: 40px;
+	}
+	.category-button {
 		width: 400px;
 		min-height: 240px;
 		font-size: 40px;
@@ -111,9 +100,8 @@ button {
 		padding-top: 10px;
 	}
 	.print-button {
-		bottom: 50px;
-		width: 300px;
-		min-height: 100px;
+		width: 400px;
+		min-height: 240px;
 		font-size: 40px;
 	}
 	.heading-style {
@@ -126,16 +114,15 @@ button {
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
-	position: absolute; 
+	position: fixed; 
     bottom: 20px; 
     
     z-index: 10;
 	width: 98%;
-	
 }
 
 #iconContainer {
-	margin-left: 10px;
+	margin-left: 20px;
 	order: 2;
 }
 #iconImage {

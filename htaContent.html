@@ -14,10 +14,11 @@
 <body style="overflow:auto;">
 
 
-<script type="text/javascript">	
+<script type="text/javascript">		
 	//Options Scripts and Variables
 	var optionsEnabled = false;
-	document.addEventListener('DOMContentLoaded', function() {
+	
+	function buildOptionsToggle() {
 		var toggleButton = document.getElementById('toggleButton');
 		toggleButton.addEventListener('click', function() {
 			var toggleSwitch = toggleButton.querySelector('.toggle-button');
@@ -25,7 +26,7 @@
 			toggleSwitch.classList.toggle('on');
 			optionsEnabled = !optionsEnabled;
 		});
-	});
+	}
 	
 	function resetToggle() {
 		var toggleButton = document.getElementById('toggleButton');
@@ -38,6 +39,28 @@
 
 		// Optionally reset any other related states
 		optionsEnabled = false;
+	}
+	
+	//Build Logo Dark Mode
+	function darkMode(){
+		var logoContainer = document.getElementById('logoContainer');
+		var toggleButton = document.getElementById('toggleButton');
+		var toggleText = document.getElementById('toggleText');
+		var state = "light";
+		logoContainer.addEventListener('click', function() {
+			if(state == "light"){
+				document.body.style.backgroundColor = "#292929";
+				toggleButton.style.backgroundColor = "transparent";
+				toggleText.style.color = "white";
+				state = "dark";
+			}else{
+				document.body.style.backgroundColor = "transparent";
+				toggleButton.style.backgroundColor = "#ccc";
+				toggleText.style.color = "black";
+				state = "light";
+			}
+		});
+	
 	}
 	
 	//Notification Scripts and Variables
@@ -212,15 +235,16 @@
 		headingContainer.innerHTML = '';
 		var itemNameHeader = document.createElement("h1");
         itemNameHeader.className = "heading-style"; // Add a class for styling
-        itemNameHeader.innerHTML = header
+        itemNameHeader.innerHTML = header;
         headingContainer.appendChild(itemNameHeader);	
 	}
 	
 	//Parameter for callback. Callback usually contains onButtonPress.
 	function addPrintButton(callback) {
-        var printButton = document.createElement("div");
+        var printButton = document.createElement("button");
         printButton.id = "printButton";
-        printButton.className = "print-button";
+        printButton.classList.add("rectangular-button");
+		printButton.classList.add("print-button");
         printButton.innerHTML = "Print";
         printButton.onclick = callback;
 		var buttonContainer = document.getElementById("buttonContainer");
@@ -229,13 +253,12 @@
 
 	//Parameter for callback. Callback usually contains creating the categories/items.
     function addBackButton(callback) {
-		var backButton = document.createElement("div");
+		var backButton = document.createElement("button");
 		backButton.id = "backButton";
-        backButton.className = "back-button";
-        backButton.innerHTML = "Back <br> &#8592;";
-        backButton.onclick = callback;
 		backButton.classList.add("rectangular-button");
 		backButton.classList.add("back-button");
+        backButton.innerHTML = "Back<br>&#8592;";
+        backButton.onclick = callback;
 		var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.appendChild(backButton);
     }
@@ -367,8 +390,9 @@
         buttonContainer.innerHTML = ''; // Clear existing buttons
 		
 		//Header
-		var listRandom = ["Bruce Lee", "你知道紅豆冰沙很好喝嗎？", "你有吃過豆腐飯嗎？很好吃哦", 
-						"鷄排飯粉絲", "高麗菜刈包", "滷蛋飯", "請踢我", "一半梅子·一半辣"];
+		var listRandom = ["Bruce Lee", "芋頭牛奶蠻好喝的", "你有吃過豆腐飯嗎？很好吃哦", 
+						"鷄排飯粉絲", "高麗菜刈包", "滷蛋飯", "請踢我", "一半梅子，一半辣", "我真的太無聊了",
+						"紅豆冰沙不知道有什麽秘密。。。"];
 		var randomGreeting = listRandom[Math.floor(Math.random() * listRandom.length)];
 		addHeader(randomGreeting);
         
@@ -445,7 +469,7 @@
 		var extraOptions = [];
 		
 		if (category === "Meal Box") {
-			extraOptions = ["No Pickled Greens", "No Cabbage", "No Egg", "No Rice", "Extra Pickled Greens", "Extra Cabbage", "Extra Egg"];
+			extraOptions = ["No Pickled Greens", "No Cabbage", "No Egg", "No Rice", "Extra Pickled Greens", "Extra Cabbage", "Extra Egg", "Extra Rice"];
 		} else if (category === "Drinks") {
 			extraOptions = ["16 oz", "24 oz", "Less Ice", "No Ice"];
 		}
@@ -499,13 +523,11 @@
 		//Add the Header
 		addHeader(item.name);
 
-		//Add the Print button
-		//May want to rewrite this later and append it directly into button container.
-		addPrintButton(function() { buttonClicked(item.name, category, item.selectedOptions); });
-		
 		//Add the back button
-		addBackButton(function() { 
+		addBackButton(function() {
+			//Go back to the items page
 			generateItemButtons(category);
+			//Clear out the selected options
 			item.selectedOptions = [];
 			//Hide the options containers
 			optionsContainer.style.display = 'none';
@@ -514,9 +536,10 @@
 			buttonContainer.style.justifyContent = "flex-start";
 		});
 		
-
-		var buttonContainer = document.getElementById('buttonContainer');
-		var backButton = document.getElementById('backButton');
+		//Add the Print button
+		addPrintButton(function() { 
+			buttonClicked(item.name, category, item.selectedOptions); 
+		});
 
 		// Create an invisible line break element to move the back button down
 		var hrBreak = document.createElement('hr');
@@ -524,6 +547,9 @@
 		hrBreak.style.height = '0';
 		hrBreak.style.margin = '0';
 		hrBreak.style.border = '0';
+
+		var backButton = document.getElementById('backButton');
+		var printButton = document.getElementById('printButton');
 
 		// Insert the line break before the backButton
 		buttonContainer.insertBefore(hrBreak, backButton);
@@ -612,13 +638,15 @@
 
 
     window.onload = function () {
-        loadCategories();
+		loadCategories();
 		addIconButton();
+		buildOptionsToggle();
+		darkMode();
     };
 </script>
 
 <!-- Logo images wrapped in containers -->
-<div class="logo-container">
+<div id="logoContainer" class="logo-container">
     <img class="padded" src="logo.jpg" alt="Love Bao Logo">
 </div>
 
@@ -627,7 +655,7 @@
 
 <footer id="footer" class = "footer">
 	<div class="toggle-button-wrapper" id="toggleButton">
-		<span class="toggle-text">Options</span>
+		<span class="toggle-text" id="toggleText">Options</span>
 		<div class="toggle-button"></div>
 	</div>
 	<div id="iconContainer"></div>

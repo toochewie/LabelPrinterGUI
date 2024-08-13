@@ -3,7 +3,7 @@
 echo %1
 
 :: Print ZPL file to the default printer
-COPY %1 \\X380-Yoga\LoveBao
+COPY %1 \\LabelTablet\LoveBao
 
 ::Delete ZPL file
 del %1

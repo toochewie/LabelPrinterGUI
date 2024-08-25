@@ -36,10 +36,10 @@
 						
 		var extrasList = ["鹽酥杏鮑菇", "蜂蜜檸檬愛玉", "鷄絲涼麵", "素涼麵", "鹽酥鷄", "鷄排", "炸排骨",
 						"梅子地瓜薯條", "芋頭薯條", "炸花枝丸", "炸魚豆腐", 
-						"冬瓜檸檬茶", "紅豆沙了牛奶", "綠豆沙了牛奶"
+						"冬瓜檸檬茶", "紅豆沙了牛奶", "綠豆沙了牛奶",
+						"三層白肉佐五味醬", "酸梅汁"
 						]
 		var soupList = ["海帶味噌湯", "貢丸湯", "魚丸湯", "鮮魚味噌湯"]
-		var redoList = ["三層白肉佐五味醬", "酸梅汁"]
 		
 		//Items need to be shifted on the x-coordinate to keep it centered. We can calculate this using the 
 		//following equation: 203 - (#OfCharacters * fontSize + paddingLeft + paddingRight)/2
@@ -53,8 +53,14 @@
 		}
 		*/
 		function run(){
-			for(var i = 0; i < redoList.length; i++){
-				saveImage(redoList[i]);
+			for(var i = 0; i < menuItemList.length; i++){
+				saveImage(menuItemList[i]);
+			}
+			for(var i = 0; i < extrasList.length; i++){
+				saveImage(extrasList[i]);
+			}
+			for(var i = 0; i < soupList.length; i++){
+				saveImage(soupList[i]);
 			}
 		}
 		
@@ -69,10 +75,10 @@
 			for (var i = 0; i < newCoordinates.length; i++) {
 				var menuItem = newCoordinates[i].menuItem;
 				var xCoord = newCoordinates[i].xCoord;
-				var regex = new RegExp("\\^XA\\^FO\\s*\\d+\\s*,\\s*\\d+\\s*", "g");
-				zplContent = zplContent.replace(regex, "^FO" + xCoord + ", 60"); // Assuming 60 for y-coordinate
-				regex = new RegExp("\\^XZ", "g");
-				zplContent = zplContent.replace(regex, ""); // Assuming 60 for y-coordinate
+				var regex = new RegExp("\\^XA\\^FO\\s*\\d+\\s*,\\s*\\d+\\s*", "g");		// Creates regex value.
+				zplContent = zplContent.replace(regex, "^FO" + xCoord + ", 60"); 		// Replaces regex. Removes ^XA limiter and creates new coordinates. Assuming 60 for y-coordinate.
+				regex = new RegExp("\\^XZ", "g");										// Creates regex value.
+				zplContent = zplContent.replace(regex, ""); 							// Removes ^XZ limiter.
 			}
 
 			// Overwrite the original ZPL file with the modified content

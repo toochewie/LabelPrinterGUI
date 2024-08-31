@@ -24,7 +24,7 @@
         }
     </style>
     <script type="text/javascript">
-		var menuItemList = ["焢肉刈包", "瘦肉刈包", "雞排刈包", 
+		/*var menuItemList = ["焢肉刈包", "瘦肉刈包", "雞排刈包", 
 							"泡菜焢肉刈包", "泡菜瘦肉刈包", "麻辣焢肉刈包", "麻辣瘦肉刈包",
 							"台灣香腸刈包", "魚排刈包", "脆皮五花肉刈包", "韓式辣醬脆皮五花肉刈包", "燒烤醬脆皮五花肉刈包", 
 							"炸軟殼蟹刈包","蒲燒鰻魚刈包", "素肉排刈包", "素五花刈包(蒟蒻)", 
@@ -40,7 +40,9 @@
 						"三層白肉佐五味醬", "酸梅汁"
 						]
 		var soupList = ["海帶味噌湯", "貢丸湯", "魚丸湯", "鮮魚味噌湯"]
+		*/
 		
+		var menuItemList = ["鷄肉串飯", "紅燒肉飯", "鷄肉串", "紅燒肉"]
 		//Items need to be shifted on the x-coordinate to keep it centered. We can calculate this using the 
 		//following equation: 203 - (#OfCharacters * fontSize + paddingLeft + paddingRight)/2
 		/*function coordinates(){
@@ -55,12 +57,6 @@
 		function run(){
 			for(var i = 0; i < menuItemList.length; i++){
 				saveImage(menuItemList[i]);
-			}
-			for(var i = 0; i < extrasList.length; i++){
-				saveImage(extrasList[i]);
-			}
-			for(var i = 0; i < soupList.length; i++){
-				saveImage(soupList[i]);
 			}
 		}
 		

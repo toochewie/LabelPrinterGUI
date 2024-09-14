@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text to Image HTA</title>
+    <hta:application
+        applicationname="Text to Image HTA"
+        border="thin"
+        borderstyle="normal"
+        caption="yes"
+        showintaskbar="yes"
+        singleinstance="yes"
+        sysmenu="yes"
+        windowstate="normal">
+    <meta http-equiv="x-ua-compatible" content="IE=11"/>
+    <meta charset="UTF-8">
+    <style>
+        @font-face {
+            font-family: "Pearl";
+            src: url(FakePearl-Light.woff);
+        }
+
+        body {
+            font-family: "Pearl", Arial, sans-serif;
+        }
+    </style>
+    <script type="text/javascript">
+        function run() {
+            // Load the JSON file
+            var fso = new ActiveXObject("Scripting.FileSystemObject");
+            var file = fso.OpenTextFile("../menu.json", 1); // 1: For reading
+            var jsonData = file.ReadAll();
+            file.Close();
+
+            // Parse the JSON data
+            var menuItems = JSON.parse(jsonData);
+
+            // Iterate over menu items
+            for (var category in menuItems) {
+                var items = menuItems[category];
+                for (var i = 0; i < items.length; i++) {
+                    // Ensure "chinese_name" field exists, add if missing
+                    if (!items[i].hasOwnProperty('chinese_name')) {
+                        //items[i].chinese_name = ""; // Add field and set as empty
+                    }
+
+                    var chineseName = items[i].chinese_name;
+                    var chineseZPL = items[i].chinese;
+
+                    // Skip the item if "chinese" field is already populated
+                    if (chineseZPL && chineseZPL.trim() !== "") {
+                        console.log("Skipping item:", chineseName, "as it's already processed.");
+                        continue; // Skip this item
+                    }
+
+                    // Call saveImage function with the chinese_name
+                    var zplCode = saveImage(chineseName);
+
+                    // Update the "chinese" field with ZPL code
+                    items[i].chinese = zplCode;
+                }
+            }
+
+			//menuItems = processJson(menuItems);
+		
+            // Save the updated JSON back to the file
+            saveJson(menuItems, "../menu.json");
+        }
+		
+		/*
+		function processJson(jsonData) {
+			var result = {
+				"Gua Bao": jsonData["Gua Bao"].map(function(item) {
+					// Reorder fields and minify options
+					var reorderedItem = {
+						"name": item.name,
+						"chinese_name": item.chinese_name,
+						"options": item.options ? item.options: [],  // Minify options to a single line
+						"chinese": item.chinese || ""  // Ensure 'chinese' field is present, even if empty
+						
+					};
+					return reorderedItem;
+				})
+			};
+			return result;
+		}
+		*/
+
+        function saveImage(menuItem) {
+            var canvas = document.getElementById('myCanvas');
+            var ctx = canvas.getContext('2d');
+
+            canvas.width = 10 + menuItem.length * 35 + 10;
+            canvas.height = 50;
+
+            var text = menuItem;
+            var font = 'Pearl';
+            var fontSize = 35;
+            var textColor = 'black';
+            var bgColor = 'white';
+
+            ctx.font = fontSize + 'px ' + font;
+
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = textColor;
+            var textWidth = ctx.measureText(text).width;
+            var x = (canvas.width - textWidth) / 2;
+            var y = fontSize;
+
+            ctx.fillText(text, x, y);
+
+            var imgData = canvas.toDataURL("image/jpeg").replace(/^data:image\/jpeg;base64,/, "");
+            saveToFile(imgData, menuItem + ".jpg");
+
+            document.getElementById('outputText').innerText = text;
+
+            var shell = new ActiveXObject("WScript.Shell");
+            shell.run("cmd /c curl --request POST http://api.labelary.com/v1/graphics --form file=@" + menuItem + ".jpg > " + menuItem + ".zpl", 1, true);
+            shell.run("delete.bat " + menuItem + ".jpg");
+
+            var textWidth = menuItem.length * 35 + 20;
+            var xCoord = 203 - textWidth / 2;
+
+            var zplFilename = menuItem + ".zpl";
+            var newCoordinates = [{ menuItem: menuItem, xCoord: xCoord }];
+            modifyZPLFile(zplFilename, newCoordinates);
+
+            // Read the generated ZPL file
+            var zplFile = fso.OpenTextFile(zplFilename, 1); // 1: For reading
+            var zplContent = zplFile.ReadAll();
+            zplFile.Close();
+
+            return zplContent;
+        }
+
+        function modifyZPLFile(filename, newCoordinates) {
+            var fso = new ActiveXObject("Scripting.FileSystemObject");
+            var file = fso.OpenTextFile(filename, 1);
+            var zplContent = file.ReadAll();
+            file.Close();
+
+            for (var i = 0; i < newCoordinates.length; i++) {
+                var menuItem = newCoordinates[i].menuItem;
+                var xCoord = newCoordinates[i].xCoord;
+                var regex = new RegExp("\\^FO\\s*\\d+\\s*,\\s*\\d+", "g");
+                zplContent = zplContent.replace(regex, "^FO" + xCoord + ", 60");
+            }
+
+            var outFile = fso.OpenTextFile(filename, 2);
+            outFile.Write(zplContent);
+            outFile.Close();
+        }
+
+        function saveJson(data, filename) {
+            var fso = new ActiveXObject("Scripting.FileSystemObject");
+            var file = fso.CreateTextFile(filename, true);
+            file.Write(JSON.stringify(data, null, 4)); // Pretty print with 4-space indent
+            file.Close();
+        }
+
+        function saveToFile(base64Data, filename) {
+            var stream = new ActiveXObject("ADODB.Stream");
+            stream.Type = 1; // Binary
+            stream.Open();
+            stream.Write(decodeBase64(base64Data));
+            stream.SaveToFile(filename, 2);
+            stream.Close();
+        }
+
+        function decodeBase64(base64) {
+            var xml = new ActiveXObject("MSXML2.DOMDocument");
+            var elem = xml.createElement("temp");
+            elem.dataType = "bin.base64";
+            elem.text = base64;
+            return elem.nodeTypedValue;
+        }
+    </script>
+</head>
+<body onload="run()">
+    <h1>Text to Image HTA</h1>
+    <p>Text: <span id="outputText"></span></p>
+    <canvas id="myCanvas" style="display:none;"></canvas>
+</body>
+</html>

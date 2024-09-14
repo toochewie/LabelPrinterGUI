@@ -14,54 +14,57 @@
 <body style="overflow:auto;">
 
 
-<script type="text/javascript">		
-	//Options Scripts and Variables
-	var optionsEnabled = false;
+<script type="text/javascript">
 	
-	function buildOptionsToggle() {
-		var toggleButton = document.getElementById('toggleButton');
-		toggleButton.addEventListener('click', function() {
-			var toggleSwitch = toggleButton.querySelector('.toggle-button');
-			var toggleText = toggleButton.querySelector('.toggle-text');
-			toggleSwitch.classList.toggle('on');
+	// Options and Dark Mode Scripts
+	let optionsEnabled = false;
+	let isDarkMode = true;
+
+	function initializeToggles() {
+		// Cache elements
+		const optionsSwitchContainer = document.getElementById('optionsSwitchContainer');
+		const optionsSwitch = optionsSwitchContainer.querySelector('.toggle-button');
+		const optionsSwitchLabel = optionsSwitchContainer.querySelector('.toggle-text');
+		const logoContainer = document.getElementById('logoContainer');
+
+		// Set initial states
+		setDarkMode(isDarkMode);
+
+		// Toggle options on container click
+		optionsSwitchContainer.addEventListener('click', function() {
+			optionsSwitch.classList.toggle('on');
 			optionsEnabled = !optionsEnabled;
 		});
+
+		// Toggle dark mode on logo click
+		logoContainer.addEventListener('click', function() {
+			isDarkMode = !isDarkMode;
+			setDarkMode(isDarkMode);
+		});
+
+		// Function to set dark or light mode styles
+		function setDarkMode(isDark) {
+			document.body.style.backgroundColor = isDark ? "#292929" : "transparent";
+			optionsSwitchContainer.style.backgroundColor = isDark ? "transparent" : "#ccc";
+			optionsSwitchLabel.style.color = isDark ? "white" : "black";
+		}
 	}
-	
+
+	// Function to reset toggle state, accessible globally
 	function resetToggle() {
-		var toggleButton = document.getElementById('toggleButton');
-		var toggleSwitch = toggleButton.querySelector('.toggle-button');
+		const optionsSwitchContainer = document.getElementById('optionsSwitchContainer');
+		const optionsSwitch = optionsSwitchContainer.querySelector('.toggle-button');
 
 		// Ensure the toggle switch is off
-		if (toggleSwitch.classList.contains('on')) {
-			toggleSwitch.classList.remove('on');
+		if (optionsSwitch.classList.contains('on')) {
+			optionsSwitch.classList.remove('on');
 		}
 
-		// Optionally reset any other related states
 		optionsEnabled = false;
 	}
+
 	
-	//Build Logo Dark Mode
-	function darkMode(){
-		var logoContainer = document.getElementById('logoContainer');
-		var toggleButton = document.getElementById('toggleButton');
-		var toggleText = document.getElementById('toggleText');
-		var state = "light";
-		logoContainer.addEventListener('click', function() {
-			if(state == "light"){
-				document.body.style.backgroundColor = "#292929";
-				toggleButton.style.backgroundColor = "transparent";
-				toggleText.style.color = "white";
-				state = "dark";
-			}else{
-				document.body.style.backgroundColor = "transparent";
-				toggleButton.style.backgroundColor = "#ccc";
-				toggleText.style.color = "black";
-				state = "light";
-			}
-		});
-	
-	}
+
 	
 	//Notification Scripts and Variables
     var notification = null;
@@ -297,7 +300,7 @@
 					secretMenu.forEach(function (item) {
 						var button = document.createElement("div");
 						button.className = "rectangular-button";
-						button.innerHTML = "<br>" + item.name;
+						button.innerHTML = "<br><br>" + item.name;
 						button.onclick = function () {
 							var zplContent = item.ZPL;
 							
@@ -384,7 +387,7 @@
 
 
     function generateCategoryButtons() {
-		toggleButton.style.display = 'none';
+		optionsSwitchContainer.style.display = 'none';
 		
         var buttonContainer = document.getElementById("buttonContainer");
         buttonContainer.innerHTML = ''; // Clear existing buttons
@@ -429,7 +432,7 @@
 
 	function generateItemButtons(category) {
 		resetToggle();
-		toggleButton.style.display = 'inline-flex';
+		optionsSwitchContainer.style.display = 'inline-flex';
 		var buttonContainer = document.getElementById("buttonContainer");
 		buttonContainer.innerHTML = ''; // Clear existing buttons
 		addHeader(category);
@@ -445,7 +448,7 @@
 			
 			function openOptions() {
 				generateOptionButtons(item, category);
-				toggleButton.style.display = 'none';
+				optionsSwitchContainer.style.display = 'none';
 			}
 
 			button.onmousedown = function (e) {
@@ -640,8 +643,8 @@
     window.onload = function () {
 		loadCategories();
 		addIconButton();
-		buildOptionsToggle();
-		darkMode();
+		// Initialize toggles when the page loads
+		initializeToggles();
     };
 </script>
 
@@ -654,8 +657,8 @@
 <div id="buttonContainer" class = "flexContainer"></div>
 
 <footer id="footer" class = "footer">
-	<div class="toggle-button-wrapper" id="toggleButton">
-		<span class="toggle-text" id="toggleText">Options</span>
+	<div class="toggle-button-wrapper" id="optionsSwitchContainer">
+		<span class="toggle-text" id="optionsSwitchLabel">Options</span>
 		<div class="toggle-button"></div>
 	</div>
 	<div id="iconContainer"></div>

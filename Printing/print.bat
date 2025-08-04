@@ -1,5 +1,8 @@
 @echo off
 
+:: Set working directory to "Printing"
+cd /d "%~dp0"
+
 set /p PRINTER=<printer_name.txt
 
 :: Batch script to print ZPL file

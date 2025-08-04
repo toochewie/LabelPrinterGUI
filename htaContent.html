@@ -231,7 +231,7 @@
 		
         // Call the batch script to print the ZPL file
         var shell = new ActiveXObject("WScript.Shell");
-        shell.Run("Printing\\silentPrinter.lnk " + filename);
+        shell.Run("Printing\\print.bat " + filename, 0, false);
     }
 		
 //Functions for adding buttons and headers

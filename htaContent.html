@@ -15,7 +15,9 @@
 
 
 <script type="text/javascript">
-	
+	// Set version for updater to check against
+	const APP_VERSION = "2.2.0";
+
 	// Options and Dark Mode Scripts
 	let optionsEnabled = false;
 	let isDarkMode = true;
@@ -220,7 +222,7 @@
 
     function writeZPLToFile(zplContent, filename) {
         var fso = new ActiveXObject("Scripting.FileSystemObject");
-        var file = fso.CreateTextFile(filename, true);
+        var file = fso.CreateTextFile("Printing//" + filename, true);
         file.Write(zplContent);
         file.Close();
     }
@@ -231,7 +233,7 @@
 		
         // Call the batch script to print the ZPL file
         var shell = new ActiveXObject("WScript.Shell");
-        shell.Run("silentPrinter.lnk " + filename);
+        shell.Run("Printing\\silentPrinter.lnk " + filename);
     }
 		
 //Functions for adding buttons and headers
@@ -386,6 +388,152 @@
 		}*/
 	}
 
+	function addSettingsButton(callback){
+		// Add the image (bottom left corner)
+		var settingsImage = document.createElement('img');
+		settingsImage.id = 'settingsImage';
+		settingsImage.src = 'Images/settings.png';
+		settingsImage.alt = 'Settings';
+		settingsContainer.appendChild(settingsImage);
+		
+		settingsImage.onclick = function() {
+				//First, clear existing buttons from button container
+				buttonContainer.innerHTML = '';
+				//Add a header and back button
+				addHeader("Settings");
+				
+				addBackButton( function(){
+					generateCategoryButtons();
+					//Reset the justify style back to left
+					buttonContainer.style.justifyContent = "flex-start";
+				});
+				
+				
+				//Set Printer Button
+				var button = document.createElement("div");
+				button.className = "rectangular-button";
+				button.innerHTML = "<br><br>" + "Set Printer";
+				button.onclick = function(){
+					buildPrinterMenu();
+				};
+				buttonContainer.appendChild(button);
+				
+				//Update Button
+				var button = document.createElement("div");
+				button.className = "rectangular-button";
+				button.innerHTML = "<br><br>" + "Check for Update";
+				button.onclick = function(){
+					var shell = new ActiveXObject("WScript.Shell");
+					shell.Run("Update.bat");
+					alert("If an update was downloaded, please restart the app!\n如果有安裝update,請重開APP!");
+				};
+				buttonContainer.appendChild(button);
+
+		};
+				
+	}
+	
+	function strip(str) {
+      // Manually remove leading and trailing whitespace
+      while (str.length > 0 && (str.charAt(0) === " " || str.charAt(0) === "\t")) {
+        str = str.substring(1);
+      }
+      while (str.length > 0 && (str.charAt(str.length - 1) === " " || str.charAt(str.length - 1) === "\t" || str.charAt(str.length - 1) === "\r")) {
+        str = str.substring(0, str.length - 1);
+      }
+      return str;
+    }
+
+
+	function buildPrinterMenu() {
+		buttonContainer.innerHTML = "";
+		document.getElementById("buttonContainer").innerHTML = '<span class="spinner"></span> Loading printers...';
+		
+		var shell = new ActiveXObject("WScript.Shell");
+		var exec = shell.Exec("powershell -Command \"Get-CimInstance Win32_Printer | Select-Object Name");
+
+		var output = "";
+		while (!exec.StdOut.AtEndOfStream) {
+			output += exec.StdOut.ReadLine() + "\n";
+		}
+		var lines = output.split("\n");
+		
+		var currentPrinterName = getCurrentPrinterName();
+		
+		buttonContainer.innerHTML = "";
+		
+		addBackButton( function(){
+			generateCategoryButtons();
+			//Reset the justify style back to left
+			buttonContainer.style.justifyContent = "flex-start";
+		});
+		
+		for (var i = 0; i < lines.length; i++) {
+			var line = strip(lines[i]);
+			if (line === "") continue;
+			
+			//Remove Labels
+			if (line.indexOf("Name") === 0 || line.indexOf("---") === 0) continue;
+
+			var lowerLine = line.toLowerCase();
+			//alert("Line: [" + line + "]");
+
+			var printerName = strip(line);
+
+			if (printerName === "") continue;
+			var buttonLabel = printerName /*+ (isDefault ? " (Default)" : "")*/;
+			
+
+			var button = document.createElement("button");
+			button.classList.add("rectangular-button");
+			if (currentPrinterName == printerName) button.style.backgroundColor = "#88B04B";
+			button.innerHTML = buttonLabel;
+			
+			button.onclick = (function(name, buttonElement) {
+			  return function() {
+				alert("Selected printer: " + name);
+				
+				// Write to File
+				var fso = new ActiveXObject("Scripting.FileSystemObject");
+				var file = fso.CreateTextFile("Printing//printer_name.txt", true);
+				file.WriteLine(name);
+				file.Close();
+				
+				// Reset all printer button background colors
+				var container = document.getElementById("buttonContainer");
+				var children = container.getElementsByTagName("button");
+				for (var i = 0; i < children.length; i++) {
+				children[i].style.backgroundColor = "";
+				}
+
+				// Set the selected button to green
+				buttonElement.style.backgroundColor = "#88B04B";
+
+			  };
+			})(printerName, button);
+			
+			buttonContainer.appendChild(button);
+			buttonContainer.appendChild(document.createElement("br"));
+			
+		
+		};
+	}
+	
+
+	function getCurrentPrinterName() {
+		var fso = new ActiveXObject("Scripting.FileSystemObject");
+		var path = "Printing//printer_name.txt";
+	
+		if (!fso.FileExists(path)) return null;
+
+		var file = fso.OpenTextFile(path, 1); // 1 = ForReading
+		var name = file.ReadLine().trim();
+		file.Close();
+		
+		return name;
+	}
+	
+	
 
     function generateCategoryButtons() {
 		//Get rid of the options switch
@@ -396,7 +544,7 @@
 		//Header
 		var listRandom = ["Bruce Lee", "芋頭牛奶蠻好喝的", "你有吃過豆腐飯嗎？很好吃哦", 
 						"鷄排飯粉絲", "高麗菜刈包", "滷蛋飯", "請踢我", "一半梅子，一半辣", "我真的太無聊了",
-						"紅豆冰沙不知道有什麽秘密。。。"];
+						"紅豆冰沙不知道有什麽秘密。。。", "Follow @lovebao_taiwanesekitchen on Instagram!"];
 		var randomGreeting = listRandom[Math.floor(Math.random() * listRandom.length)];
 		addHeader(randomGreeting);
         
@@ -644,6 +792,7 @@
     window.onload = function () {
 		loadCategories();
 		addIconButton();
+		addSettingsButton();
 		// Initialize toggles when the page loads
 		initializeToggles();
     };
@@ -658,11 +807,16 @@
 <div id="buttonContainer" class = "flexContainer"></div>
 
 <footer id="footer" class = "footer">
-	<div class="toggle-button-wrapper" id="optionsSwitchContainer">
-		<span class="toggle-text" id="optionsSwitchLabel">Options</span>
-		<div class="toggle-button"></div>
-	</div>
-	<div id="iconContainer"></div>
+	<!-- Left side -->
+	<div id="settingsContainer">> </div>
+	
+	<!-- Right Side -->
+	<div class="footer-right">
+		<div class="toggle-button-wrapper" id="optionsSwitchContainer">
+			<span class="toggle-text" id="optionsSwitchLabel">Options</span>
+			<div class="toggle-button"></div>
+		</div>
+		<div id="iconContainer"></div>
 	
 </footer>
 </body>

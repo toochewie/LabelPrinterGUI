@@ -112,7 +112,7 @@ button {
 
 .footer {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
 	align-items: center;
 	position: fixed; 
     bottom: 20px; 
@@ -121,12 +121,28 @@ button {
 	width: 98%;
 }
 
+.footer-right {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+	
+
 #iconContainer {
 	margin-left: 20px;
 	order: 2;
 }
 #iconImage {
 	width: 120px; /* Adjust the size as needed */
+	height: auto;
+	cursor: pointer; /* Change cursor to pointer */
+}
+
+#settingsContainer {
+}
+
+#settingsImage {
+	width: 80px; /* Adjust the size as needed */
 	height: auto;
 	cursor: pointer; /* Change cursor to pointer */
 }

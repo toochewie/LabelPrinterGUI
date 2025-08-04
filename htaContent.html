@@ -15,8 +15,6 @@
 
 
 <script type="text/javascript">
-	// Set version for updater to check against
-	const APP_VERSION = "2.2.0";
 
 	// Options and Dark Mode Scripts
 	let optionsEnabled = false;
@@ -424,8 +422,7 @@
 				button.innerHTML = "<br><br>" + "Check for Update";
 				button.onclick = function(){
 					var shell = new ActiveXObject("WScript.Shell");
-					shell.Run("Update.bat");
-					alert("If an update was downloaded, please restart the app!\n如果有安裝update,請重開APP!");
+					shell.Run("powershell -ExecutionPolicy Bypass -File updater.ps1", 0, false); // 0 = hidden, false = no wait
 				};
 				buttonContainer.appendChild(button);
 

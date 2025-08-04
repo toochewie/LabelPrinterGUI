@@ -1,90 +1,75 @@
 # updater.ps1
-$repo = "Chewie610/LabelPrinterGUI"
-$branch = "main"
-$htaFile = "LabelPrinter.hta"
-$tempZip = "$env:TEMP\LabelPrinterUpdate.zip"
-$extractPath = "$env:TEMP\LabelPrinterUpdate"
-$remoteVersionURL = "https://raw.githubusercontent.com/$repo/$branch/version.txt"
-$zipURL = "https://github.com/$repo/archive/refs/heads/$branch.zip"
 
-function Compare-SemanticVersion($v1, $v2) {
-    $a = $v1.Split('.')
-    $b = $v2.Split('.')
-    for ($i = 0; $i -lt [Math]::Max($a.Length, $b.Length); $i++) {
-        $num1 = if ($i -lt $a.Length) { [int]$a[$i] } else { 0 }
-        $num2 = if ($i -lt $b.Length) { [int]$b[$i] } else { 0 }
-        if ($num1 -lt $num2) { return -1 }
-        if ($num1 -gt $num2) { return 1 }
+$ErrorActionPreference = 'Stop'
+$repoOwner = "Chewie610"
+$repoName = "LabelPrinterGUI"
+$htaFile = "LabelPrinterGUI.hta"
+$excludeDir = "Printing"
+
+Write-Host "Checking for updates..."
+
+# Function to extract version from the HTA file
+function Get-VersionFromHTA($path) {
+    $versionLine = Get-Content $path | Where-Object { $_ -match 'const\s+APP_VERSION\s*=\s*".*";' }
+    if ($versionLine -match '"([^"]+)"') {
+        return [version]$matches[1]
+    } else {
+        throw "Version not found in HTA."
     }
-    return 0
 }
 
-function Show-Message($msg) {
-    $msgScript = "$env:TEMP\popup.vbs"
-    Set-Content -Path $msgScript -Value "MsgBox ""$msg"", vbInformation, ""Label Printer Updater"""
-    Start-Process "wscript.exe" -ArgumentList "`"$msgScript`""
-}
+# Get local version
+$localVersion = Get-VersionFromHTA $htaFile
+Write-Host "Local version: $localVersion"
 
-# 1. Read version from HTA
-if (!(Test-Path $htaFile)) {
-    Show-Message "Could not find HTA file: $htaFile"
-    exit 1
-}
-$htaContent = Get-Content $htaFile -Raw
-if ($htaContent -match 'APP_VERSION\s*=\s*"([0-9\.]+)"') {
-    $localVersion = $matches[1]
-} else {
-    Show-Message "Could not find APP_VERSION in HTA."
-    exit 1
-}
+# Download latest repo as ZIP
+$tempPath = "$env:TEMP\LabelPrinterUpdate"
+$zipPath = "$tempPath\repo.zip"
+$extractPath = "$tempPath\unzipped"
 
-# 2. Fetch remote version
-try {
-    $remoteVersion = (Invoke-RestMethod -Uri $remoteVersionURL -UseBasicParsing).Trim()
-} catch {
-    Show-Message "Failed to contact GitHub for update."
-    exit 1
-}
+Remove-Item $tempPath -Recurse -Force -ErrorAction Ignore
+New-Item -ItemType Directory -Path $tempPath | Out-Null
 
-# 3. Compare versions
-$cmp = Compare-SemanticVersion $localVersion $remoteVersion
-if ($cmp -ge 0) {
-    Show-Message "You're already up to date. Version: $localVersion"
+$zipUrl = "https://github.com/$repoOwner/$repoName/archive/refs/heads/main.zip"
+
+Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath
+
+# Extract ZIP
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $extractPath)
+
+# Get remote version from downloaded HTA
+$remoteHTA = Get-ChildItem $extractPath -Recurse -Filter $htaFile | Select-Object -First 1
+$remoteVersion = Get-VersionFromHTA $remoteHTA.FullName
+Write-Host "Remote version: $remoteVersion"
+
+# Compare versions
+if ($remoteVersion -le $localVersion) {
+    [System.Windows.Forms.MessageBox]::Show("You're already up to date. ($localVersion)", "No Update Needed")
     exit 0
 }
 
-# 4. Download update
-try {
-    Invoke-WebRequest -Uri $zipURL -OutFile $tempZip
-    Expand-Archive -Path $tempZip -DestinationPath $extractPath -Force
-} catch {
-    Show-Message "Failed to download or extract update."
-    exit 1
-}
+# Copy new files (except 'Printing' folder)
+$sourceRoot = $remoteHTA.Directory.Parent.FullName
+$destRoot = Get-Location
 
-# 5. Copy files, skipping the Printing folder
-$extractedRoot = Join-Path $extractPath "$($repo.Split('/')[1])-$branch"
-Get-ChildItem -Path $extractedRoot -Recurse | ForEach-Object {
-    $relativePath = $_.FullName.Substring($extractedRoot.Length + 1)
-    if ($relativePath -like "Printing\*" -or $relativePath -ieq "Printing") {
-        return  # skip anything inside or named "Printing"
+Get-ChildItem $sourceRoot -Recurse | ForEach-Object {
+    $relativePath = $_.FullName.Substring($sourceRoot.Length).TrimStart('\')
+    if ($relativePath -like "$excludeDir*") {
+        return
     }
 
-    $destPath = Join-Path "." $relativePath
-    $destDir = Split-Path $destPath
-
-    if (!(Test-Path $destDir)) {
-        New-Item -ItemType Directory -Path $destDir | Out-Null
+    $dest = Join-Path $destRoot $relativePath
+    if ($_.PSIsContainer) {
+        New-Item -ItemType Directory -Path $dest -Force | Out-Null
+    } else {
+        Copy-Item $_.FullName -Destination $dest -Force
     }
-
-    Copy-Item -Path $_.FullName -Destination $destPath -Force
 }
 
-# 6. Cleanup
-Remove-Item $tempZip -Force
-Remove-Item $extractPath -Recurse -Force
+# Restart the app
+Start-Process "$destRoot\$htaFile"
+[System.Windows.Forms.MessageBox]::Show("Updated to version $remoteVersion!", "Update Successful")
 
-# 7. Show message and restart HTA
-Show-Message "Updated to version $remoteVersion successfully."
-Start-Process "mshta.exe" "$htaFile"
-exit
+# Exit old instance
+exit 0

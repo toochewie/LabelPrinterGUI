@@ -4,7 +4,7 @@ $ErrorActionPreference = 'Stop'
 $repoOwner = "Chewie610"
 $repoName = "LabelPrinterGUI"
 $htaFile = "LabelPrinterGUI.hta"
-$excludeDir = "Printing"
+$excludeDirs = @("Printing", "Chinese Text Generator")
 
 Write-Host "Checking for updates..."
 
@@ -46,6 +46,7 @@ Write-Host "Remote version: $remoteVersion"
 # Compare versions
 if ($remoteVersion -le $localVersion) {
     [System.Windows.Forms.MessageBox]::Show("You're already up to date. ($localVersion)", "No Update Needed")
+    Read-Host -Prompt "Press Enter to continue"
     exit 0
 }
 
@@ -55,8 +56,13 @@ $destRoot = Get-Location
 
 Get-ChildItem $sourceRoot -Recurse | ForEach-Object {
     $relativePath = $_.FullName.Substring($sourceRoot.Length).TrimStart('\')
-    if ($relativePath -like "$excludeDir*") {
-        return
+    
+    # Check if relative path starts with any excluded directory
+    foreach ($dir in $excludeDirs) {
+        if ($relativePath -like "$dir*" -or $relativePath -like "$dir\*") {
+            # Skip this file/folder
+            return
+        }
     }
 
     $dest = Join-Path $destRoot $relativePath
@@ -67,9 +73,19 @@ Get-ChildItem $sourceRoot -Recurse | ForEach-Object {
     }
 }
 
-# Restart the app
+# Kill the currently running HTA (if any)
+$htaProcesses = Get-CimInstance Win32_Process | Where-Object {
+    $_.Name -ieq "mshta.exe" -and $_.CommandLine -match "LabelPrinterGUI\.hta"
+}
+
+foreach ($proc in $htaProcesses) {
+    Write-Host "Killing HTA process ID $($proc.ProcessId)..."
+    Stop-Process -Id $proc.ProcessId -Force
+    Start-Sleep -Milliseconds 500  # slight delay to avoid race condition
+}
+
+# Relaunch updated HTA
 Start-Process "$destRoot\$htaFile"
 [System.Windows.Forms.MessageBox]::Show("Updated to version $remoteVersion!", "Update Successful")
-
-# Exit old instance
+Read-Host -Prompt "Press Enter to continue"
 exit 0

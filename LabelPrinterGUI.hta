@@ -18,15 +18,26 @@
 	SELECTION="no"
 	/>
 
-<script>
-    window.location = 'htaContent.html';
-</script>
-<script type="javascript">
-    window.location = 'htaContent.html';
-</script>
-<script type="javascript">
+<script language="javascript">
     // Set version for updater to check against
-	const APP_VERSION = "2.2.0";
+	var APP_VERSION = "2.2.0";
+
+    // Create printer.txt if it doesn't exist
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    var scriptDir = fso.GetParentFolderName(location.pathname.replace("file:///", "").replace(/\//g, "\\"));
+    var printerFile = scriptDir + "\\Printing\\printer_name.txt";
+    var templateFile = scriptDir + "\\Printing\\printer.template.txt";
+    if (!fso.FileExists(printerFile)) {
+        try {
+            fso.CopyFile(templateFile, printerFile);
+        } catch (e) {
+            alert("Could not create printer.txt from template.\n\n" + e.message);
+        }
+    }
+
+    // Load the App 
+    window.location = 'htaContent.html';
 </script>
+
 </head>
 </html>

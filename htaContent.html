@@ -422,7 +422,7 @@
 				button.innerHTML = "<br><br>" + "Check for Update";
 				button.onclick = function(){
 					var shell = new ActiveXObject("WScript.Shell");
-					//shell.Run("powershell -ExecutionPolicy Bypass -File updater.ps1", 1, false); // 0 = hidden, false = no wait
+					shell.Run("update.bat", 0, false); // 0 = hidden, false = no wait
 				};
 				buttonContainer.appendChild(button);
 

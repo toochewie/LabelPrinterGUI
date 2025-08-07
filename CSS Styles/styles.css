@@ -138,8 +138,10 @@ button {
 	cursor: pointer; /* Change cursor to pointer */
 }
 
+/*
 #settingsContainer {
 }
+*/
 
 #settingsImage {
 	width: 80px; /* Adjust the size as needed */

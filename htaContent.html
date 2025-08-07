@@ -483,15 +483,30 @@
 
 
 	function buildPrinterMenu() {
-		//showSpinner("Loading Printers...");
+		showSpinner("Loading Printers...");
+
+		var printerListFile = "Printing\\printer_list.txt";
 		
 		var shell = new ActiveXObject("WScript.Shell");
-		var exec = shell.Exec("powershell -Command \"Get-CimInstance Win32_Printer | Select-Object Name");
 
-		var output = "";
-		while (!exec.StdOut.AtEndOfStream) {
-			output += exec.StdOut.ReadLine() + "\n";
+		// Remove existing file if any
+		 var fso = new ActiveXObject("Scripting.FileSystemObject");
+		if (fso.FileExists(printerListFile)) {
+			fso.DeleteFile(printerListFile);
 		}
+
+		// Run the PowerShell command, writing to file (window hidden with 0)
+		shell.Run("powershell -Command \"Get-CimInstance Win32_Printer | Select-Object -ExpandProperty Name | Out-File -FilePath 'Printing\\printer_list.txt' -Encoding ASCII\"", 0, true);
+
+		// Wait until file exists and read from it
+		var output = "";
+		if (fso.FileExists(printerListFile)) {
+			var file = fso.OpenTextFile(printerListFile, 1);
+			output = file.ReadAll();
+			file.Close();
+			fso.DeleteFile(printerListFile);
+		}
+		
 		var lines = output.split("\n");
 		
 		var currentPrinterName = getCurrentPrinterName();
@@ -551,7 +566,7 @@
 			buttonContainer.appendChild(button);
 			buttonContainer.appendChild(document.createElement("br"));
 			
-		
+			hideSpinner();
 		};
 	}
 	

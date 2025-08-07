@@ -9,7 +9,7 @@ set /p PRINTER=<printer_name.txt
 echo %1
 
 :: Print ZPL file to the default printer
-COPY %1 \\%COMPUTERNAME%\%PRINTER%
+COPY %1 "\\localhost\%PRINTER%"
 
 ::Delete ZPL file
 del %1

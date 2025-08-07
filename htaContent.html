@@ -613,6 +613,9 @@
     function generateCategoryButtons() {
 		//Get rid of the options switch
 		optionsSwitchContainer.style.display = 'none';
+		//Bring back the settings button
+		settingsContainer.style.display = 'block';
+		footer.style.justifyContent = 'space-between';
 		// Clear existing buttons from the button container
         buttonContainer.innerHTML = ''; 
 		
@@ -657,7 +660,12 @@
 
 	function generateItemButtons(category) {
 		resetToggle();
+		// Reneable The option switch
 		optionsSwitchContainer.style.display = 'inline-flex';
+		// Disable Settings
+		settingsContainer.style.display = 'none';
+		footer.style.justifyContent = 'flex-end';
+
 		// Clear existing buttons from the button container
 		buttonContainer.innerHTML = '';
 		addHeader(category);

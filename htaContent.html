@@ -421,11 +421,51 @@
 				button.className = "rectangular-button";
 				button.innerHTML = "<br><br>" + "Check for Update";
 				button.onclick = function(){
+
+					showSpinner("Checking for update...");
+
 					var shell = new ActiveXObject("WScript.Shell");
 					shell.Run("update.bat", 0, false); // 0 = hidden, false = no wait
-				};
-				buttonContainer.appendChild(button);
 
+					// Poll every second for the update_status.txt
+					var tries = 0;
+					var maxTries = 10;
+
+					var interval = setInterval(function() {
+						tries++;
+						try {
+							var fso = new ActiveXObject("Scripting.FileSystemObject");
+							var statusFile = "update_status.txt";
+							hideSpinner();
+							if (fso.FileExists(statusFile)) {
+								var file = fso.OpenTextFile(statusFile, 1);
+								var status = file.ReadAll().trim();
+								file.Close();
+								fso.DeleteFile(statusFile);
+								
+								if (status === "NO_UPDATE") {
+									alert("Status: Already up to date.");
+								} else if (status === "UPDATED") {
+									alert("Status: Updated — restart the app to see changes...");
+								} else {
+									alert("Status: Unknown result.");
+								}
+
+								clearInterval(interval);
+							} else if (tries >= maxTries) {
+								alert("Status: Timed out. Check your wifi?");
+								clearInterval(interval);
+							}
+						} catch (e) {
+							alert("Status: Error - " + e.message);
+							clearInterval(interval);
+						}
+					}, 1000);
+
+
+				};
+
+				buttonContainer.appendChild(button);
 		};
 				
 	}
@@ -443,8 +483,7 @@
 
 
 	function buildPrinterMenu() {
-		buttonContainer.innerHTML = "";
-		document.getElementById("buttonContainer").innerHTML = '<span class="spinner"></span> Loading printers...';
+		//showSpinner("Loading Printers...");
 		
 		var shell = new ActiveXObject("WScript.Shell");
 		var exec = shell.Exec("powershell -Command \"Get-CimInstance Win32_Printer | Select-Object Name");
@@ -530,6 +569,30 @@
 		return name;
 	}
 	
+	function showSpinner(message) {
+		// Create container
+		let container = document.createElement("div");
+		container.id = "spinnerContainer";
+
+		// Spinner HTML
+		container.innerHTML =
+		'<div class="spinner-content">' +
+			'<span class="spinner"></span>' +
+			'<div class="spinner-message">' + message + '</div>' +
+		'</div>';
+
+		document.body.appendChild(container);
+	}
+
+	function hideSpinner() {
+		const spinner = document.getElementById("spinnerContainer");
+		if (spinner) {
+			spinner.parentNode.removeChild(spinner);
+		}
+	}
+
+
+
 	
 
     function generateCategoryButtons() {

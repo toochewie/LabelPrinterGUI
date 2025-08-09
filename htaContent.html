@@ -586,7 +586,9 @@
 						);
 
 						alert("The printer should be operational now! Sending a test print.");
-						// Write ZPL content to a temporary file
+
+						setTimeout(function () {
+							// Write ZPL content to a temporary file
 							var filename = "print_" + Date.now() + ".zpl";
 							writeZPLToFile("^XA" + chicken + "^XZ", filename);
 
@@ -594,6 +596,7 @@
 							printZPLFile(filename, "Chicken");
 							isPrinting = false;
 							processPrintQueue();	
+						}, 500);
 
 					}else{
 						alert("This printer will not be able to print in it's current state!");

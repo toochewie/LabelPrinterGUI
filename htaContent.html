@@ -467,7 +467,22 @@
 
 
 				};
+				buttonContainer.appendChild(button);
 
+				//Set Chicken Button
+				var button = document.createElement("div");
+				button.className = "rectangular-button";
+				button.innerHTML = "<br><br>" + "🐔";
+				button.onclick = function(){
+					// Write ZPL content to a temporary file
+						var filename = "print_" + Date.now() + ".zpl";
+						writeZPLToFile("^XA" + chicken + "^XZ", filename);
+
+						// Print ZPL file using the batch file
+						printZPLFile(filename, "Chicken");
+						isPrinting = false;
+						processPrintQueue();	
+				};
 				buttonContainer.appendChild(button);
 		};
 				
@@ -719,11 +734,15 @@
 		var searchTerms = [
 						{terms: ["Original", "Braised Pork", "Braised Lean Pork", "Braised Drum"], color: "#BC243C"},
 						{terms: ["Chicken"], color: "#ff7f7f"},
-						{terms: ["Crab", "Eel", "Fish", "Octopus"], color: "#34568B"},						
+						{terms: ["Crab", "Eel", "Fish", "Octopus", "Calamari"], color: "#34568B"},						
 						{terms: ["Vegetarian", "Cucumber", "Tofu", "Fries", "King"], color: "#88B04B"},
 						{terms: ["Mala"], color: "#ea002a"},
 						{terms: ["Crispy"], color: "#955251"},
-						{terms: ["Red Bean", "Tea", "Slush"], color: "Pink"}
+						//Drinks
+						{terms: ["Aiyu"], color: "#dbcd7f"},
+						{terms: ["Slush"], color: "#a2f2e9"},
+						{terms: ["Sour"], color: "#c843d1"},
+						{terms: ["Honey"], color: "#bd2a2a"}
 						]
 		for (var i = 0; i < searchTerms.length; i++){
 			for (var j=0; j < searchTerms[i].terms.length; j++){
